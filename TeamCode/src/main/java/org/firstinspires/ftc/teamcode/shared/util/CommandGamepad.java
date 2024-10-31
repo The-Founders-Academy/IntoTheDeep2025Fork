@@ -14,7 +14,7 @@ public class CommandGamepad extends SubsystemBase {
     private SlewRateLimiter m_slewRateLimiterLeftY;
     private SlewRateLimiter m_slewRateLimiterRightX;
     private SlewRateLimiter m_slewRateLimiterRightY;
-    private double epsilon = 1e6;
+    private double epsilon = 1e-6;
 
     public CommandGamepad(Gamepad gamepad, double leftStickSlewRate, double rightStickSlewRate) {
         m_gamepad = new GamepadEx(gamepad);
