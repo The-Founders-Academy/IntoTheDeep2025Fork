@@ -13,7 +13,7 @@ public class MecanumConfigs {
     private Translation2d m_frontRightPositionMeters = new Translation2d(0.178, -0.168);
     private Translation2d m_backLeftPositionMeters = new Translation2d(-0.178, 0.168);
     private Translation2d m_backRightPositionMeters = new Translation2d(-0.178, -0.168);
-    private double m_maxRobotSpeedMps = 3;
+    private double m_maxRobotSpeedMps = 2.5;
     private double m_maxRobotRotationRps = 6.28;
     private double m_metersPerTick = 0.00056; // Based on wheel geometry
     private Motor.RunMode m_runMode = Motor.RunMode.RawPower;
@@ -57,9 +57,7 @@ public class MecanumConfigs {
         return m_frontLeftName;
     }
 
-    public String getFrontRightName() {
-        return m_frontRightName;
-    }
+    public String getFrontRightName() { return m_frontRightName; }
 
     public String getBackLeftName() {
         return m_backLeftName;

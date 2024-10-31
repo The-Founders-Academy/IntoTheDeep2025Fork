@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.shared.util;
 
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,6 +14,7 @@ public class CommandGamepad extends SubsystemBase {
     private SlewRateLimiter m_slewRateLimiterLeftY;
     private SlewRateLimiter m_slewRateLimiterRightX;
     private SlewRateLimiter m_slewRateLimiterRightY;
+    private double epsilon = 1e-6;
 
     public CommandGamepad(Gamepad gamepad, double leftStickSlewRate, double rightStickSlewRate) {
         m_gamepad = new GamepadEx(gamepad);
@@ -52,6 +55,18 @@ public class CommandGamepad extends SubsystemBase {
     public GamepadButton dpadRight() {
         return m_gamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
     }
+
+    public GamepadButton leftBumper() {
+        return m_gamepad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER);
+    }
+
+    public GamepadButton rightBumper() {
+        return m_gamepad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
+    }
+
+    public Trigger m_leftTriggerActive = new Trigger(() -> leftTrigger() > epsilon);
+    public Trigger m_rightTriggerActive = new Trigger(() -> rightTrigger() > epsilon);
+
 
     public double getLeftX() {
         return m_gamepad.getLeftX();
@@ -99,5 +114,13 @@ public class CommandGamepad extends SubsystemBase {
 
     public double rightTrigger() {
         return m_gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+    }
+
+    public Trigger getLeftTriggerActive() {
+        return m_leftTriggerActive;
+    }
+
+    public Trigger getrightTriggerActive() {
+        return m_rightTriggerActive;
     }
 }
