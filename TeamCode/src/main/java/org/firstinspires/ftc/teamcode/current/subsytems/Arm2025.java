@@ -107,6 +107,7 @@ public class Arm2025 extends SubsystemBase {
 
     public void setArmPower(double power) {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setPower(power);
     }
 

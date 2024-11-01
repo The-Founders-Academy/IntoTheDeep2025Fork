@@ -45,6 +45,10 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
 
         m_mecanumDrive.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
 
+        // Driver Commands
+        m_driver.dpadUp().whenPressed(new InstantCommand(() -> m_mecanumDrive.resetHeading()));
+
+
         // Operator Commands
         m_operator.buttonA().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT));
         m_operator.buttonB().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_CLEAR_BARRIER));

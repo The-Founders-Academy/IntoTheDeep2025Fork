@@ -81,6 +81,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
         return m_robotPose.getRotation().minus(new Rotation2d(Math.PI / 2));
     }
 
+    public void resetHeading() {
+        m_odo.getPose().getRotation().times(0);
+    }
+
     @Override
     public Pose2d getPose() {
         return new Pose2d(0,0,Rotation2d.fromDegrees(0));
@@ -89,10 +93,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
     @Override
     public void resetPose(Pose2d pose) {
 
-    }
-
-    public double resetHeading() {
-        return m_robotPose.getHeading() - m_initialAngleRad;
     }
 
     public void setTargetPose(Pose2d targetPose) {
