@@ -41,6 +41,8 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
         m_driver = new CommandGamepad(gamepad1, 0.2, 0.2);
         m_mecanumDrive.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
 
+        // Driver Commands
+        m_driver.buttonA().whenPressed(new InstantCommand(() -> m_mecanumDrive.resetHeading()));
 
         // Arm Commands
         m_driver.buttonA().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT));

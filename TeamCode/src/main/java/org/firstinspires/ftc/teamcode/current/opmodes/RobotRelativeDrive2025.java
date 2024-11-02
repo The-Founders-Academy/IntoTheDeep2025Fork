@@ -8,22 +8,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp()
 //@Disabled
-public class newDrive2025 extends LinearOpMode {
+public class RobotRelativeDrive2025 extends LinearOpMode {
 
     public MotorEx m_frontLeft, m_frontRight, m_backLeft, m_backRight;
 
 
     DcMotor armMotor = null; //the arm motor
     Servo wrist = null; //the wrist servo
+
+    CRServo intake = null; // intake continuous servo
 
     final double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
@@ -32,10 +32,10 @@ public class newDrive2025 extends LinearOpMode {
                     * 1 / 360.0; // we want ticks per degree, not per rotation
 
     final double ARM_COLLAPSED_INTO_ROBOT = 0;
-    final double ARM_COLLECT = 250 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER = 230 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW = 160 * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT = 239.5 * ARM_TICKS_PER_DEGREE;
+    final double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SPECIMEN = 151.5 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SAMPLE_IN_LOW = 140 * ARM_TICKS_PER_DEGREE;
     final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
@@ -60,6 +60,10 @@ public class newDrive2025 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        armMotor = hardwareMap.get(DcMotor.class, "arm");
+        intake = hardwareMap.get(CRServo.class, "intake");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
 
         /*
@@ -146,15 +150,15 @@ public class newDrive2025 extends LinearOpMode {
             And if the user presses B it reveres the servo to spit out the element.*/
 
 
-//            if (gamepad1.left_bumper) {
-//                robot.intake.setPower(robot.INTAKE_COLLECT);
-//            }
-//            else if (gamepad1.right_bumper) {
-//                robot.intake.setPower(robot.INTAKE_OFF);
-//            }
-//            else if (gamepad1.y) {
-//                robot.intake.setPower(robot.INTAKE_DEPOSIT);
-//            }
+            if (gamepad1.left_bumper) {
+                intake.setPower(INTAKE_COLLECT);
+            }
+            else if (gamepad1.right_bumper) {
+                intake.setPower(INTAKE_DEPOSIT);
+            }
+            else if (gamepad1.y) {
+                intake.setPower(INTAKE_OFF);
+            }
 
 
             /* this "FUDGE_FACTOR" allows you to move +15 and -15 degrees outside of the target position set, by holding down
@@ -172,7 +176,7 @@ public class newDrive2025 extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
-            if(gamepad1.a){
+            if(gamepad2.a){
                 /* This is the intaking/collecting arm position */
                 armPosition = ARM_COLLECT;
 //                liftPosition = LIFT_COLLAPSED;
@@ -181,7 +185,7 @@ public class newDrive2025 extends LinearOpMode {
 
             }
 
-            else if (gamepad1.b){
+            else if (gamepad2.b){
                     /*This is about 20° up from the collecting position to clear the barrier
                     Note here that we don't set the wrist position or the intake power when we
                     select this "mode", this means that the intake and wrist will continue what
@@ -189,12 +193,12 @@ public class newDrive2025 extends LinearOpMode {
                 armPosition = ARM_CLEAR_BARRIER;
             }
 
-            else if (gamepad1.x){
+            else if (gamepad2.x){
                 /* This is the correct height to score the sample in the LOW BASKET */
                 armPosition = ARM_SCORE_SAMPLE_IN_LOW;
             }
 
-            else if (gamepad1.dpad_left) {
+            else if (gamepad2.dpad_down) {
                     /* This turns off the intake, folds in the wrist, and moves the arm
                     back to folded inside the robot. This is also the starting configuration */
                 armPosition = ARM_COLLAPSED_INTO_ROBOT;
@@ -203,7 +207,7 @@ public class newDrive2025 extends LinearOpMode {
                 wrist.setPosition(WRIST_FOLDED_IN);
             }
 
-            else if (gamepad1.dpad_right){
+            else if (gamepad2.dpad_left){
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = ARM_SCORE_SPECIMEN;
                 wrist.setPosition(WRIST_FOLDED_IN);
@@ -216,7 +220,7 @@ public class newDrive2025 extends LinearOpMode {
                   wrist.setPosition(WRIST_FOLDED_IN);
             }
 
-            else if (gamepad2.dpad_down){
+            else if (gamepad2.dpad_right){
                 /* this moves the arm down to lift the robot up once it has been hooked */
                   armPosition = ARM_WINCH_ROBOT;
 //                robot.intake.setPower(robot.INTAKE_OFF);
