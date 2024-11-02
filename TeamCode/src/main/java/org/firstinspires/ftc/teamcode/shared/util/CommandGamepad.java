@@ -67,7 +67,6 @@ public class CommandGamepad extends SubsystemBase {
     public Trigger m_leftTriggerActive = new Trigger(() -> leftTrigger() > epsilon);
     public Trigger m_rightTriggerActive = new Trigger(() -> rightTrigger() > epsilon);
 
-
     public double getLeftX() {
         return m_gamepad.getLeftX();
     }
