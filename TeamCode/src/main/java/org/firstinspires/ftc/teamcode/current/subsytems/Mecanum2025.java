@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.current.subsytems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -19,29 +20,36 @@ import org.firstinspires.ftc.teamcode.shared.util.MathUtil;
 
 public class Mecanum2025 extends BaseMecanumDrive {
 
+    @Config
+    public static class Mecanum2025PARAMS {
+
+        public static double TranslationP = 0.03;
+        public static double TranslationI = 0;
+        public static double TranslationD = 0;
+        public static double RotationP = 4;
+        public static double RotationI = 0;
+        public static double RotationD = 0;
+
+    }
+
+    public double deadWheelRadiusCentimeters = 2.4;
+
+    public double ticksPerRevolution = 2000.0;
+    public double trackWidthCentimeters = 36.3;
+    double perpendicularOffsetCentimeters = -20.32;
+
+    public static double TranslationToleranceCentimeters = 0.5;
+    public static double RotationToleranceRad = Math.toRadians(3); // 3 Deg
+
     private PIDController m_translationXController;
     private PIDController m_translationYController;
     private PIDController m_rotationController;
 
-    private double deadWheelRadiusCentimeters = 2.4;
 
-    private double ticksPerRevolution = 2000.0;
-    private double trackWidthCentimeters = 36.3;
-    double perpendicularOffsetCentimeters = -20.32;
     private double m_initialAngleRad;
     private Pose2d m_robotPose;
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     private IMU m_gyro;
-
-    public static double TranslationP = 0.03;
-    public static double TranslationI = 0;
-    public static double TranslationD = 0;
-    public static double RotationP = 4;
-    public static double RotationI = 0;
-    public static double RotationD = 0;
-
-    public static double TranslationToleranceCentimeters = 0.5;
-    public static double RotationToleranceRad = Math.toRadians(3); // 3 Deg
 
     private HolonomicOdometry m_odo;
 
@@ -61,7 +69,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
         Encoder right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
         right.setDirection(Motor.Direction.REVERSE);
         Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
-
         m_odo = new HolonomicOdometry(
                 left::getDistance,
                 right::getDistance,
@@ -132,9 +139,9 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
     public void tunePIDS() {
-        m_translationXController.setPID(TranslationP, TranslationI, TranslationD);
-        m_translationYController.setPID(TranslationP, TranslationI, TranslationD);
-        m_rotationController.setPID(RotationP, RotationI, RotationD);
+        m_translationXController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
+        m_translationYController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
+        m_rotationController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
 
         m_translationXController.setTolerance(TranslationToleranceCentimeters);
         m_translationYController.setTolerance(TranslationToleranceCentimeters);
