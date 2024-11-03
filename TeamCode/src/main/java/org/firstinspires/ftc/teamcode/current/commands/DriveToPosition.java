@@ -18,7 +18,7 @@ public class DriveToPosition extends CommandBase {
 
     @Override
     public void initialize() {
-        m_mecanumDrive.setTargetPose(m_targetPose);
+        m_mecanumDrive.setTargetPose(m_targetPose);     // Puts targetPose into translationcontrollers
     }
 
     @Override

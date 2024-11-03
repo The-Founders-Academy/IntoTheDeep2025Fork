@@ -142,7 +142,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
     public void moveFieldRelativeForPID() {
-        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),      // ensures X velocity is between min and max robot speed values
+        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),      // Uses the "error" to calculate appropriate speed, between min and max speed
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
         double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),      // same for y
@@ -155,7 +155,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
             normalizedRotationRad = m_robotPose.getHeading() + 2 * Math.PI; // Normalize to [0, 2PI], -PI becomes PI
         }
 
-        double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),       // finds rotation velocity, again between min and max values
+        double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),       // finds appropriate rotation velocity, again between min and max values
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
