@@ -33,6 +33,16 @@ public class Mecanum2025 extends BaseMecanumDrive {
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     private IMU m_gyro;
 
+    public static double TranslationP = 0.03;
+    public static double TranslationI = 0;
+    public static double TranslationD = 0;
+    public static double RotationP = 4;
+    public static double RotationI = 0;
+    public static double RotationD = 0;
+
+    public static double TranslationToleranceCentimeters = 0.5;
+    public static double RotationToleranceRad = Math.toRadians(3); // 3 Deg
+
     private HolonomicOdometry m_odo;
 
 
@@ -88,7 +98,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     @Override
     public void resetPose(Pose2d pose) {
-
+        m_robotPose = pose;
     }
 
     public void resetHeading() {
@@ -115,6 +125,44 @@ public class Mecanum2025 extends BaseMecanumDrive {
         return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
     }
 
+    public void resetPIDS() {
+        m_translationXController.reset();
+        m_translationYController.reset();
+        m_rotationController.reset();
+    }
+
+    public void tunePIDS() {
+        m_translationXController.setPID(TranslationP, TranslationI, TranslationD);
+        m_translationYController.setPID(TranslationP, TranslationI, TranslationD);
+        m_rotationController.setPID(RotationP, RotationI, RotationD);
+
+        m_translationXController.setTolerance(TranslationToleranceCentimeters);
+        m_translationYController.setTolerance(TranslationToleranceCentimeters);
+        m_rotationController.setTolerance(RotationToleranceRad);
+    }
+
+    public void moveFieldRelativeForPID() {
+        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),      // ensures X velocity is between min and max robot speed values
+                -m_mecanumConfigs.getMaxRobotSpeedMps(),
+                m_mecanumConfigs.getMaxRobotSpeedMps());
+        double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),      // same for y
+                -m_mecanumConfigs.getMaxRobotSpeedMps(),
+                m_mecanumConfigs.getMaxRobotSpeedMps());
+
+        // Do some angle wrapping to ensure the shortest path is taken to get to the rotation target
+        double normalizedRotationRad = m_robotPose.getHeading();
+        if(normalizedRotationRad < 0) {
+            normalizedRotationRad = m_robotPose.getHeading() + 2 * Math.PI; // Normalize to [0, 2PI], -PI becomes PI
+        }
+
+        double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),       // finds rotation velocity, again between min and max values
+                -m_mecanumConfigs.getMaxRobotRotationRps(),
+                m_mecanumConfigs.getMaxRobotRotationRps());
+
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
+        move(speeds);
+    }
+
     public void stop() {
         m_frontLeft.stopMotor();
         m_frontRight.stopMotor();
@@ -124,6 +172,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     @Override
     public void periodic() {
+        tunePIDS();
         m_odo.updatePose();
 
         double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
