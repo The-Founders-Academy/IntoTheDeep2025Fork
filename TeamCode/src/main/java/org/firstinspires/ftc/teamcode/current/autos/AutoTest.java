@@ -30,10 +30,11 @@ public class AutoTest extends CommandOpMode {
 
         // Moves to Blue Human Player zone
         CommandScheduler.getInstance().schedule(  new DriveToPosition(m_mecanumDrive, new Pose2d(-300, 300, m_mecanumDrive.getHeading())).withTimeout(2000));
-        CommandScheduler.getInstance().schedule(  new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(2000));
+        CommandScheduler.getInstance().schedule(  new DriveToPosition(m_mecanumDrive, new Pose2d(0, 300,Rotation2d.fromDegrees(180))).withTimeout(2000));
 
         // Moves to left side of ascent zone
-        CommandScheduler.getInstance().schedule(  new DriveToPosition(m_mecanumDrive, new Pose2d(-100, 50,Rotation2d.fromDegrees(180))).withTimeout(2000));
+
+        CommandScheduler.getInstance().schedule(  new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(2000));
         CommandScheduler.getInstance().schedule(  new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_ATTACH_HANGING_HOOK).withTimeout(2000));
         CommandScheduler.getInstance().schedule(  new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(2000));
     }
