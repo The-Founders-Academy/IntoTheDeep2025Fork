@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
+import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
 
 
 public class ArmCommand extends CommandBase {
@@ -23,6 +24,7 @@ public class ArmCommand extends CommandBase {
 
     private Arm2025 m_armSubsystem;
     private ArmPosition m_armPosition;
+    private CommandGamepad m_operator;
 
     public ArmCommand(Arm2025 armSubsystem, ArmPosition armPosition) {
         m_armPosition = armPosition;
@@ -31,6 +33,14 @@ public class ArmCommand extends CommandBase {
         addRequirements(m_armSubsystem);
         // TODO See if the line above is actually needed
 
+    }
+
+    public ArmCommand(Arm2025 armSubsystem, ArmPosition armPosition, CommandGamepad operator) {
+        m_armPosition = armPosition;
+        m_armSubsystem = armSubsystem;
+        m_operator = operator;
+
+        addRequirements(m_armSubsystem);
     }
 
     public void initialize() {
@@ -68,11 +78,11 @@ public class ArmCommand extends CommandBase {
                 break;
 
             case LEFT_TRIGGER_PRESSED:
-                m_armSubsystem.setArmPower(-0.1);
+                m_armSubsystem.setRightArmPower(m_operator);
                 break;
 
             case RIGHT_TRIGGER_PRESSED:
-                m_armSubsystem.setArmPower(0.1);
+                m_armSubsystem.setLeftArmPower(m_operator);
                 break;
         }
 

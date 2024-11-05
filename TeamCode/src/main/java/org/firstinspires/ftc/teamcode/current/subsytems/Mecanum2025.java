@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.current.subsytems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -23,10 +25,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
     @Config
     public static class Mecanum2025PARAMS {
 
-        public static double TranslationP = 0.03;
+        public static double TranslationP = 0.035;
         public static double TranslationI = 0;
         public static double TranslationD = 0;
-        public static double RotationP = 4;
+        public static double RotationP = 3;
         public static double RotationI = 0;
         public static double RotationD = 0;
 
@@ -56,6 +58,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
         super(hardwareMap, mecanumConfigs, initialPose, alliance);
+
+        m_translationYController = new PIDController(0,0,0);
+        m_translationXController = new PIDController(0,0,0);
+        m_rotationController = new PIDController(0,0,0);
 
         m_frontLeft.setInverted(true);
         m_backLeft.setInverted(true);
@@ -126,6 +132,19 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
 
         m_rotationController.setSetPoint(targetRotation);
+
+        TelemetryPacket targetvsOdoPose = new TelemetryPacket();
+
+        targetvsOdoPose.put("Target X:", m_targetPose.getX());
+        targetvsOdoPose.put("Target Y:", m_targetPose.getY());
+        targetvsOdoPose.put("Target Rotation:", m_targetPose.getRotation());
+        targetvsOdoPose.put("Real X:", m_odo.getPose().getX());
+        targetvsOdoPose.put("Real Y:", m_odo.getPose().getY());
+        targetvsOdoPose.put("Real Rotation:", m_odo.getPose().getRotation());
+
+        FtcDashboard.getInstance().sendTelemetryPacket(targetvsOdoPose);
+
+
     }
 
     public boolean atTargetPose() {
@@ -141,7 +160,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
     public void tunePIDS() {
         m_translationXController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
         m_translationYController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
-        m_rotationController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
+        m_rotationController.setPID(Mecanum2025PARAMS.RotationP, Mecanum2025PARAMS.RotationI, Mecanum2025PARAMS.RotationD);
 
         m_translationXController.setTolerance(TranslationToleranceCentimeters);
         m_translationYController.setTolerance(TranslationToleranceCentimeters);

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.current.subsytems;
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -8,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
 
 public class Arm2025 extends SubsystemBase {
 
@@ -37,8 +40,8 @@ public class Arm2025 extends SubsystemBase {
 
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN = 0.8333;
-    final double WRIST_FOLDED_OUT = 0.5;
+    final double WRIST_FOLDED_IN = 0.54;
+    final double WRIST_FOLDED_OUT = 0.2;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
@@ -105,12 +108,17 @@ public class Arm2025 extends SubsystemBase {
 
     }
 
-    public void setArmPower(double power) {
+    public void setLeftArmPower(CommandGamepad operator) {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armMotor.setPower(power);
+
+        armMotor.setPower(-operator.leftTrigger());
     }
 
+    public void setRightArmPower(CommandGamepad operator) {
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        armMotor.setPower(operator.rightTrigger());
+    }
     public void setWristPosition(double wristPosition) {
         wrist.setPosition(wristPosition);
     }

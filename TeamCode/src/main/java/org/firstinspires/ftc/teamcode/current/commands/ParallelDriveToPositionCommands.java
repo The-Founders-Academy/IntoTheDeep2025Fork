@@ -24,11 +24,18 @@ public class ParallelDriveToPositionCommands extends SequentialCommandGroup {
 
 
         addCommands(
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-10,0, Rotation2d.fromDegrees(0))),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-10,-10, Rotation2d.fromDegrees(0))),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(0,-10, Rotation2d.fromDegrees(0))),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(0,0, Rotation2d.fromDegrees(0))),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN)
+                new DriveToPosition(m_mecanumDrive, new Pose2d(0,0, Rotation2d.fromDegrees(90))).withTimeout(2000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(50,0, Rotation2d.fromDegrees(180))).withTimeout(2000),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(2000),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(1000),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF).withTimeout(1000),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(0,0, Rotation2d.fromDegrees(0))).withTimeout(2000)
+
+
+
+
         );
     }
 

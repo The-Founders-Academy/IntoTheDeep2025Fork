@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.current.opmodes;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelRaceGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -32,15 +33,10 @@ public class DriveToPositionTest extends CommandOpMode {
         m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(0, 0, Rotation2d.fromDegrees(0)), BaseMecanumDrive.Alliance.RED);  // sets initial pose to 0, 0, 0
         m_armSubsystem = new Arm2025(hardwareMap);
 
-//        m_driver.buttonA().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(15, 15, m_mecanumDrive.getHeading())).withTimeout(2000)); // Move 15 cm forward without changing heading
-        m_driver.buttonX().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(m_mecanumDrive.getPose().getX(), m_mecanumDrive.getPose().getY(), Rotation2d.fromDegrees(90))).withTimeout(2000)); // return to starting position
-        m_driver.buttonY().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(0, 0, Rotation2d.fromDegrees(90))).withTimeout(2000)); // Rotate to 90 deg
-
-        m_driver.buttonB().whenPressed(new InstantCommand(() -> {
-            m_mecanumDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-
-        }, m_mecanumDrive));
-
+        m_driver.buttonB().whenPressed(new ParallelDriveToPositionCommands(m_mecanumDrive, m_armSubsystem));
         m_driver.buttonA().whenPressed(new ParallelDriveToPositionCommands(m_mecanumDrive, m_armSubsystem));
+        m_driver.buttonX().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(20,0, Rotation2d.fromDegrees(0))).withTimeout(2000));
+        m_driver.buttonY().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(20,0,Rotation2d.fromDegrees(900))).withTimeout(2000));
+
     }
 }
