@@ -34,6 +34,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     }
 
+    private Rotation2d headingOffset = new Rotation2d(0);
+
     public double deadWheelRadiusCentimeters = 2.4;
 
     public double ticksPerRevolution = 2000.0;
@@ -114,8 +116,15 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_robotPose = pose;
     }
 
+    @Override
     public void resetHeading() {
-        m_odo.updatePose(new Pose2d(m_odo.getPose().getX(), m_odo.getPose().getY(), Rotation2d.fromDegrees(0)));
+//        m_odo.updatePose(new Pose2d(m_odo.getPose().getX(), m_odo.getPose().getY(), Rotation2d.fromDegrees(0)));
+          headingOffset = getHeading();
+    }
+
+    @Override
+    public Rotation2d getAdjustedHeading() {
+        return getHeading().minus(headingOffset);
     }
 
     public void setTargetPose(Pose2d targetPose) {

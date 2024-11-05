@@ -12,6 +12,8 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.MathUtil;
 
@@ -21,14 +23,20 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         RED, BLUE
     }
 
+
     protected MotorEx m_frontLeft, m_frontRight, m_backLeft, m_backRight;
     protected MecanumDriveKinematics m_kinematics;
     protected MecanumConfigs m_mecanumConfigs;
     protected Alliance m_alliance;
 
+    public Mecanum2025 m_mecanumDrive;
+
     public abstract Rotation2d getHeading();
     public abstract Pose2d getPose();
     public abstract void resetPose(Pose2d pose);
+    public abstract void resetHeading();
+
+    public abstract Rotation2d getAdjustedHeading();
 
     public BaseMecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
         m_mecanumConfigs = mecanumConfigs;
@@ -46,6 +54,7 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
                 m_mecanumConfigs.getBackLeftPosition(), m_mecanumConfigs.getBackRightPosition());
 
         m_alliance = alliance;
+
     }
 
     protected void move(ChassisSpeeds speeds) {
@@ -55,6 +64,7 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         m_backLeft.setVelocity(wheelSpeeds.rearLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
         m_backRight.setVelocity(wheelSpeeds.rearRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
     }
+
 
     /**
      * @param xPercentVelocity The forward velocity. Ranges from -1 to 1.
@@ -80,10 +90,10 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         double omegaRps = omegaPercentVelocity * m_mecanumConfigs.getMaxRobotRotationRps();
         ChassisSpeeds speeds;
         if(m_alliance == Alliance.BLUE) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getHeading().minus(Rotation2d.fromDegrees(180)));
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading().minus(Rotation2d.fromDegrees(180)));
         }
         else {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getHeading());
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading());
 
             TelemetryPacket heading = new TelemetryPacket();
             heading.put("heading", getHeading());
