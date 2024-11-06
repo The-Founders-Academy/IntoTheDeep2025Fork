@@ -7,9 +7,7 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.current.commands.ArmCommand;
-import org.firstinspires.ftc.teamcode.current.commands.DriveToPosition;
-import org.firstinspires.ftc.teamcode.current.commands.ParallelDriveToPositionCommands;
+import org.firstinspires.ftc.teamcode.current.commands.AutoCommandRunner;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
@@ -30,7 +28,7 @@ public class AutoTest extends CommandOpMode {
         m_armSubsystem = new Arm2025(hardwareMap);
 
 
-        CommandScheduler.getInstance().schedule(  new ParallelDriveToPositionCommands(m_mecanumDrive, m_armSubsystem));
+        CommandScheduler.getInstance().schedule(  new AutoCommandRunner(m_mecanumDrive, m_armSubsystem));
 
     }
 
