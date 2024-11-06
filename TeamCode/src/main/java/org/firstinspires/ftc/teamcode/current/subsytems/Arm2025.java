@@ -12,7 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm2025 extends SubsystemBase {
 
     private final Servo wrist;
-    private final DcMotor armMotor;
+    private final DcMotorEx armMotor;
+    private final DcMotorEx slideMotor;
     private final CRServo intake;
 
     final double ARM_TICKS_PER_DEGREE =
@@ -21,6 +22,14 @@ public class Arm2025 extends SubsystemBase {
                     * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                     * 1 / 360.0; // we want ticks per degree, not per rotation
 
+
+    final double SLIDE_TICKS_PER_DEGREE =
+            28 // number of encoder ticks per rotation of the bare motor
+                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                    * 1 / 360.0; // we want ticks per degree, not per rotation
+
+
+    // Arm Position Variables
     final double ARM_COLLAPSED_INTO_ROBOT = 0;
     final double ARM_COLLECT = 239.5 * ARM_TICKS_PER_DEGREE;
     final double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;    // was 230
@@ -28,6 +37,10 @@ public class Arm2025 extends SubsystemBase {
     final double ARM_SCORE_SAMPLE_IN_LOW = 140 * ARM_TICKS_PER_DEGREE;
     final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
+
+    // Slide Position Variables
+    final double SLIDE_RETRACTED = 0;
+    final double SLIDE_EXTENDED = 360 * ARM_TICKS_PER_DEGREE; // Full Rotation of Motor, will likely have to increase
 
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
@@ -49,7 +62,8 @@ public class Arm2025 extends SubsystemBase {
     public Arm2025(final HardwareMap hardwareMap) {
 
         wrist = hardwareMap.get(Servo.class, "wrist");
-        armMotor = hardwareMap.get(DcMotor.class, "arm");
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm");
+        slideMotor = hardwareMap.get(DcMotorEx.class, "slide");
         intake = hardwareMap.get(CRServo.class, "intake");
     }
 
@@ -97,17 +111,20 @@ public class Arm2025 extends SubsystemBase {
     public double getINTAKE_OFF() { return INTAKE_OFF; }
     public double getINTAKE_DEPOSIT() { return INTAKE_DEPOSIT; }
 
+    public double getSLIDE_RETRACTED() { return SLIDE_RETRACTED; }
+    public double getSLIDE_EXTENDED() { return SLIDE_EXTENDED; }
+
     public void setArmPosition(double armPosition) {
         armMotor.setTargetPosition((int) (armPosition));
 
         ((DcMotorEx) armMotor).setVelocity(2100);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
     }
 
     public void setArmPower(double power) {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setPower(power);
     }
 
@@ -118,6 +135,13 @@ public class Arm2025 extends SubsystemBase {
     public void setIntake(double intakeSpeed) {
         // Same as motor, speed is between -1 and 1
         intake.setPower(intakeSpeed);
+    }
+
+    public void setSlidePosition(double slidePosition) {
+        slideMotor.setTargetPosition((int) (slidePosition));
+
+        ((DcMotorEx) slideMotor).setVelocity(2100);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 }

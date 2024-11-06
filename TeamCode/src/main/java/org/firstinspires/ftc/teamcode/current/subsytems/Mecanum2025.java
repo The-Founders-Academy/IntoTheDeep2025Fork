@@ -30,6 +30,12 @@ public class Mecanum2025 extends BaseMecanumDrive {
         public static double RotationI = 0;
         public static double RotationD = 0;
 
+        public static double SlideP = 0;
+        public static double SlideI = 0;
+        public static double SlideD = 0;
+
+
+
     }
 
     public double deadWheelRadiusCentimeters = 2.4;
@@ -45,6 +51,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
     private PIDController m_translationYController;
     private PIDController m_rotationController;
 
+    private PIDController m_slideController;
+
 
     private double m_initialAngleRad;
     private Pose2d m_robotPose;
@@ -56,6 +64,12 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
         super(hardwareMap, mecanumConfigs, initialPose, alliance);
+
+        // Will be re-assigned later
+        m_translationXController = new PIDController(0,0,0);
+        m_translationYController = new PIDController(0,0,0);
+        m_rotationController = new PIDController(0,0,0);
+        m_slideController = new PIDController(0,0,0);
 
         m_frontLeft.setInverted(true);
         m_backLeft.setInverted(true);
@@ -141,11 +155,14 @@ public class Mecanum2025 extends BaseMecanumDrive {
     public void tunePIDS() {
         m_translationXController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
         m_translationYController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
-        m_rotationController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
+        m_rotationController.setPID(Mecanum2025PARAMS.RotationP, Mecanum2025PARAMS.RotationI, Mecanum2025PARAMS.RotationD);
+        m_slideController.setPID(Mecanum2025PARAMS.SlideP, Mecanum2025PARAMS.SlideI, Mecanum2025PARAMS.SlideD);
+
 
         m_translationXController.setTolerance(TranslationToleranceCentimeters);
         m_translationYController.setTolerance(TranslationToleranceCentimeters);
         m_rotationController.setTolerance(RotationToleranceRad);
+        m_slideController.setTolerance(TranslationToleranceCentimeters);
     }
 
     public void moveFieldRelativeForPID() {
