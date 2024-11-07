@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.current.opmodes;
 
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -14,6 +16,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
+import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 
 @TeleOp()
 //@Disabled
@@ -42,7 +46,7 @@ public class RobotRelativeDrive2025 extends LinearOpMode {
     final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
 
     /* Variables that are used to set the arm to a specific position in later functions*/
-    double armPosition = (int) m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT();
+
     double armPositionFudgeFactor;
 
 
@@ -53,7 +57,12 @@ public class RobotRelativeDrive2025 extends LinearOpMode {
         intake = hardwareMap.get(CRServo.class, "intake");
         wrist = hardwareMap.get(Servo.class, "wrist");
 
+        MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
+        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
+        m_armSubsystem = new Arm2025(hardwareMap);
+
+        double armPosition = (int) m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT();
         /*
         These variables are private to the OpMode, and are used to control the drivetrain.
          */

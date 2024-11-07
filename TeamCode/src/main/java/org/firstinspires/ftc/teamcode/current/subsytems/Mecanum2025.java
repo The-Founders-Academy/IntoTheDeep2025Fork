@@ -49,7 +49,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
     private PIDController m_translationYController;
     private PIDController m_rotationController;
 
-
+    private double targetXValue;
+    private double targetYValue;
     private double m_initialAngleRad;
     private Pose2d m_robotPose;
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
@@ -69,6 +70,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_backLeft.setInverted(true);
 
         m_robotPose = initialPose;
+
+        // Stored for telemetry purposes
+        targetXValue = initialPose.getX();
+        targetYValue = initialPose.getY();
+
         m_initialAngleRad = m_robotPose.getRotation().getRadians();
 
         double cm_per_tick = 2 * Math.PI * deadWheelRadiusCentimeters / ticksPerRevolution;
@@ -97,7 +103,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0)));
+        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), Rotation2d.fromDegrees(0)));
 
     }
 
@@ -212,6 +218,18 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
         double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
         m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
+
+        TelemetryPacket robotPose = new TelemetryPacket();
+        robotPose.put("X value", m_robotPose.getX());
+        robotPose.put("Y value", m_robotPose.getY());
+        robotPose.put("Target X value", targetXValue);
+        robotPose.put("Target Y value", targetYValue);
+        robotPose.put("Initial Angle Rad:", m_initialAngleRad);
+        robotPose.put("Current Angle Rad:", currentAngleRad);
+
+        FtcDashboard robotPosePacket = FtcDashboard.getInstance();
+        robotPosePacket.sendTelemetryPacket(robotPose);
     }
+
 
 }

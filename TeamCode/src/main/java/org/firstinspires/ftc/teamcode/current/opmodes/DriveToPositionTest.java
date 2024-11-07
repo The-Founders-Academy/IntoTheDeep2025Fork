@@ -27,13 +27,13 @@ public class DriveToPositionTest extends CommandOpMode {
     public void initialize() {
         m_driver = new CommandGamepad(gamepad1, 0, 0);
         MecanumConfigs mecanumConfigs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
-        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(0, 0, Rotation2d.fromDegrees(0)), BaseMecanumDrive.Alliance.RED);  // sets initial pose to 0, 0, 0
+        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
+        // sets initial pose, should reflect where robot is physically placed
         m_armSubsystem = new Arm2025(hardwareMap);
 
+
         m_driver.buttonB().whenPressed(new AutoCommandRunner(m_mecanumDrive, m_armSubsystem));
-        m_driver.buttonA().whenPressed(new AutoCommandRunner(m_mecanumDrive, m_armSubsystem));
-        m_driver.buttonX().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(0,0, Rotation2d.fromDegrees(0))).withTimeout(2000));
-        m_driver.buttonY().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(20,0,Rotation2d.fromDegrees(900))).withTimeout(2000));
+
 
     }
 }

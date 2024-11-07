@@ -17,16 +17,9 @@ public class ParrallelCommandExecute extends ParallelCommandGroup {
         m_mecanumDrive = mecanumDrive;
         m_armSubsystem = armSubsystem;
 
+
         addCommands(
-                new DriveToPosition(m_mecanumDrive, new Pose2d(40,0, Rotation2d.fromDegrees(180))).withTimeout(2000),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(2000).andThen(
-                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT)).withTimeout(1000).andThen(
-                                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000).andThen(
-                                        new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1000).andThen(
-                                                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF)
-                                        )
-                                )
-                )
+                new DriveToPosition(m_mecanumDrive, new Pose2d(0,0, Rotation2d.fromDegrees(270))).withTimeout(2000)
         );
     }
 }
