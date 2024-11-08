@@ -163,7 +163,15 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
     public boolean atTargetPose() {
-        return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
+        return atTargetRotation() && atTargetTranslation();
+    }
+
+    public boolean atTargetTranslation() {
+        return m_translationXController.atSetPoint() && m_translationYController.atSetPoint();
+    }
+
+    public boolean atTargetRotation() {
+        return m_rotationController.atSetPoint();
     }
 
     public void resetPIDS() {
@@ -207,8 +215,13 @@ public class Mecanum2025 extends BaseMecanumDrive {
         FtcDashboard motorVelocityPacket = FtcDashboard.getInstance();
         motorVelocityPacket.sendTelemetryPacket(motorVelocities);
 
+        ChassisSpeeds speeds;
+        if(atTargetTranslation()) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
+        } else {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
+        }
         move(speeds);
     }
 
