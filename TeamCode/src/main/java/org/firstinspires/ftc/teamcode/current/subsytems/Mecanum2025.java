@@ -200,6 +200,14 @@ public class Mecanum2025 extends BaseMecanumDrive {
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
+        TelemetryPacket motorVelocities = new TelemetryPacket();
+        motorVelocities.put("vX: ", vX);
+        motorVelocities.put("vY: ", vY);
+
+        FtcDashboard motorVelocityPacket = FtcDashboard.getInstance();
+        motorVelocityPacket.sendTelemetryPacket(motorVelocities);
+
+
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
         move(speeds);
     }
