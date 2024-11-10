@@ -28,7 +28,7 @@ public class Drive2025 extends CommandOpMode {
     public void initialize() {
 
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
-        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
+        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
         m_driver = new CommandGamepad(gamepad1, 0.2, 0.2);
         m_mecanumDrive.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
     }

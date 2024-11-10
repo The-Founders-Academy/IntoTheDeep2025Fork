@@ -38,7 +38,7 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
 
     public abstract Rotation2d getAdjustedHeading();
 
-    public BaseMecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
+    public BaseMecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         m_mecanumConfigs = mecanumConfigs;
         m_frontLeft = new MotorEx(hardwareMap, m_mecanumConfigs.getFrontLeftName(), Motor.GoBILDA.RPM_312);
         m_frontRight = new MotorEx(hardwareMap, m_mecanumConfigs.getFrontRightName(), Motor.GoBILDA.RPM_312);
@@ -53,7 +53,7 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         m_kinematics = new MecanumDriveKinematics(m_mecanumConfigs.getFrontLeftPosition(), m_mecanumConfigs.getFrontRightPosition(),
                 m_mecanumConfigs.getBackLeftPosition(), m_mecanumConfigs.getBackRightPosition());
 
-        m_alliance = alliance;
+
 
     }
 
@@ -89,20 +89,16 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         double vYMps = yPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
         double omegaRps = omegaPercentVelocity * m_mecanumConfigs.getMaxRobotRotationRps();
         ChassisSpeeds speeds;
-        if(m_alliance == Alliance.BLUE) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading().minus(Rotation2d.fromDegrees(180)));
-        }
-        else {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading());
 
-            TelemetryPacket heading = new TelemetryPacket();
-            heading.put("heading", getHeading());
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading());
 
-            FtcDashboard dashboard = FtcDashboard.getInstance();
+        TelemetryPacket heading = new TelemetryPacket();
+        heading.put("heading", getHeading());
 
-            dashboard.sendTelemetryPacket(heading);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
-        }
+        dashboard.sendTelemetryPacket(heading);
+
         move(speeds);
     }
 

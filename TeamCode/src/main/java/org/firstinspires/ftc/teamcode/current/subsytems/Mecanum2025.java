@@ -66,11 +66,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
      * @param hardwareMap
      * @param mecanumConfigs
      * @param initialPose
-     * @param alliance
+     *
      */
 
-    public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
-        super(hardwareMap, mecanumConfigs, initialPose, alliance);
+    public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
+        super(hardwareMap, mecanumConfigs, initialPose);
 
         m_translationYController = new PIDController(0,0,0);
         m_translationXController = new PIDController(0,0,0);
