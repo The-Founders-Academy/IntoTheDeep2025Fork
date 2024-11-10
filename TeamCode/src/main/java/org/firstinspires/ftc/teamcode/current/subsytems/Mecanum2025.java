@@ -26,10 +26,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
     public static class Mecanum2025PARAMS {
 
         public static double TranslationP = 0.035;
-        public static double TranslationI = 0;
+        public static double TranslationI = 0.0175;
         public static double TranslationD = 0;
         public static double RotationP = 3;
-        public static double RotationI = 0;
+        public static double RotationI = 0.0175;
         public static double RotationD = 0;
 
     }
@@ -58,6 +58,16 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     private HolonomicOdometry m_odo;
 
+
+    /**
+     * Defines the system to use for DriveToPosition commands, used for driving, and used for tuning PIDs and odometry. Connected with BaseMecanumDrive.
+     *
+     *
+     * @param hardwareMap
+     * @param mecanumConfigs
+     * @param initialPose
+     * @param alliance
+     */
 
     public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
         super(hardwareMap, mecanumConfigs, initialPose, alliance);
@@ -103,7 +113,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), Rotation2d.fromDegrees(0)));
+        // TODO Switched from X, -Y to Y, X
+        m_odo.updatePose(new Pose2d(initialPose.getY(), initialPose.getX(), Rotation2d.fromDegrees(0)));
 
     }
 
@@ -122,12 +133,26 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_robotPose = pose;
     }
 
+
+    /**
+     * Sets headingOffset variable to the current heading when function is called
+     */
     @Override
     public void resetHeading() {
 //        m_odo.updatePose(new Pose2d(m_odo.getPose().getX(), m_odo.getPose().getY(), Rotation2d.fromDegrees(0)));
           headingOffset = getHeading();
     }
 
+
+    /**
+     * Returns the new heading relative to when the resetHeading() function was called.
+     * If resetHeading() was never called, the value of it is zero. This allows the driver to
+     * press a button, which calls resetHeading(), and effectively resets the robot direction
+     * when the button was pressed to the new "Foward" in field relative drive. This is useful
+     * to counteract forward drifting over time.
+     *
+     * @return
+     */
     @Override
     public Rotation2d getAdjustedHeading() {
         return getHeading().minus(headingOffset);
@@ -166,6 +191,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
         return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
     }
 
+    public boolean atTargetPosition() {
+        return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint());
+    }
+
     public void resetPIDS() {
         m_translationXController.reset();
         m_translationYController.reset();
@@ -182,6 +211,16 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_rotationController.setTolerance(RotationToleranceRad);
     }
 
+
+    /**
+     * This function is used to move during autonomous. Most of the math is done with m_translation and m_rotation controllers,
+     * through which a target posed is passed in earlier in the setTargetPose function. The calculate function then determines
+     * the appropriate X, Y, and rotational velocities (forced to be in between max and negative max robot speed),
+     * to move to the desired target position. This corrects for any error like overshoot and undershoot.
+     * When the robot is in close enough proximity to the target position, which is determined by the tolerance values in the tunePIDS() function,
+     * the robot stops. the move function converts these X, Y, and rotational speeds to individual wheel speeds, and is the last piece of code required
+     * to make the robot move. It constantly generates new velocities based on the updating error from the target position.
+     */
     public void moveFieldRelativeForPID() {
         double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),      // Uses the "error" to calculate appropriate speed, between min and max speed
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
@@ -207,9 +246,24 @@ public class Mecanum2025 extends BaseMecanumDrive {
         FtcDashboard motorVelocityPacket = FtcDashboard.getInstance();
         motorVelocityPacket.sendTelemetryPacket(motorVelocities);
 
+        /*
+        The if statement below is a bandaid solution to avoid the auto from showcasing unwanted translation behaviors when initial angle is not
+        set to zero in Autonomous. I am unsure as to why this issue is occuring, but to avoid it, if we are already at the target translation, and
+        simply need to rotate, vX and vY will be set to zero.
+         */
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
-        move(speeds);
+        if (atTargetPosition()) {
+            // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
+            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, vOmega, getHeading());
+            move(speeds);
+        }
+
+        else {
+            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading());
+            move(speeds);
+        }
+
+
     }
 
     public void stop() {
@@ -219,13 +273,18 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_backRight.stopMotor();
     }
 
+
+    // Run periodically, independent of other move functions, to generate Pose data. m_robotPose is used in FieldRelativeDrive in BaseMecanumDrive.
     @Override
     public void periodic() {
         tunePIDS();
         m_odo.updatePose();
 
         double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
-        m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
+
+
+        // TODO switched from X, -Y, to Y, X
+        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
 
         TelemetryPacket robotPose = new TelemetryPacket();
         robotPose.put("X value", m_robotPose.getX());
