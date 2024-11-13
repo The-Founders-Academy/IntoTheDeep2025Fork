@@ -93,6 +93,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         Encoder right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
         right.setDirection(Motor.Direction.REVERSE);
         Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
+
         m_odo = new HolonomicOdometry(
                 left::getDistance,
                 right::getDistance,
@@ -113,8 +114,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        // TODO Switched from X, -Y to Y, X
-        m_odo.updatePose(new Pose2d(initialPose.getY(), initialPose.getX(), Rotation2d.fromDegrees(0)));
+        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), initialPose.getRotation()));
 
     }
 
@@ -222,10 +222,12 @@ public class Mecanum2025 extends BaseMecanumDrive {
      * to make the robot move. It constantly generates new velocities based on the updating error from the target position.
      */
     public void moveFieldRelativeForPID() {
-        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),      // Uses the "error" to calculate appropriate speed, between min and max speed
+        // Uses the "error" to calculate appropriate speed, between min and max speed
+        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
-        double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),      // same for y
+
+        double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
 
@@ -252,17 +254,9 @@ public class Mecanum2025 extends BaseMecanumDrive {
         simply need to rotate, vX and vY will be set to zero.
          */
 
-        if (atTargetPosition()) {
             // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
-            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, vOmega, getHeading());
-            move(speeds);
-        }
-
-        else {
             ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading());
             move(speeds);
-        }
-
 
     }
 
@@ -280,11 +274,12 @@ public class Mecanum2025 extends BaseMecanumDrive {
         tunePIDS();
         m_odo.updatePose();
 
-        double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
+        double currentAngleRad = m_odo.getPose().getRotation().getRadians();
 
 
         // TODO switched from X, -Y, to Y, X
-        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
+        m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
+        
 
         TelemetryPacket robotPose = new TelemetryPacket();
         robotPose.put("X value", m_robotPose.getX());
@@ -296,6 +291,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
         FtcDashboard robotPosePacket = FtcDashboard.getInstance();
         robotPosePacket.sendTelemetryPacket(robotPose);
+        
+
     }
 
 
