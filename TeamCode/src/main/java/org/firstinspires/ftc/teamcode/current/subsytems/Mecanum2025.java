@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -34,7 +35,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     }
 
-    private Rotation2d headingOffset = new Rotation2d(0);
 
     public double deadWheelRadiusCentimeters = 2.4;
 
@@ -51,13 +51,12 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     private double targetXValue;
     private double targetYValue;
-    private double m_initialAngleRad;
     private Pose2d m_robotPose;
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-    private IMU m_gyro;
 
     private HolonomicOdometry m_odo;
 
+    private Rotation2d m_referenceRotation = Rotation2d.fromDegrees(0); // Used for heading
 
     /**
      * Defines the system to use for DriveToPosition commands, used for driving, and used for tuning PIDs and odometry. Connected with BaseMecanumDrive.
@@ -69,9 +68,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
      *
      */
 
-    public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
+    public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
         super(hardwareMap, mecanumConfigs, initialPose);
 
+        m_alliance = alliance;
         m_translationYController = new PIDController(0,0,0);
         m_translationXController = new PIDController(0,0,0);
         m_rotationController = new PIDController(0,0,0);
@@ -84,8 +84,13 @@ public class Mecanum2025 extends BaseMecanumDrive {
         // Stored for telemetry purposes
         targetXValue = initialPose.getX();
         targetYValue = initialPose.getY();
+        m_referenceRotation = initialPose.getRotation();
 
-        m_initialAngleRad = m_robotPose.getRotation().getRadians();
+        if(m_alliance == Alliance.RED) {
+            m_referenceRotation = Rotation2d.fromDegrees(90);
+        } else {
+            m_referenceRotation = Rotation2d.fromDegrees(-90);
+        }
 
         double cm_per_tick = 2 * Math.PI * deadWheelRadiusCentimeters / ticksPerRevolution;
         Encoder left = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
@@ -102,60 +107,38 @@ public class Mecanum2025 extends BaseMecanumDrive {
                 perpendicularOffsetCentimeters
         );
 
-        m_gyro = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters myIMUparameters;
-
-        myIMUparameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        m_gyro.initialize(myIMUparameters);
-
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), initialPose.getRotation()));
-
-    }
-
-    @Override
-    public Rotation2d getHeading() {
-        return m_robotPose.getRotation().minus(new Rotation2d(Math.PI / 2));
+        m_odo.updatePose(initialPose);
     }
 
     @Override
     public Pose2d getPose() {
-        return new Pose2d(0,0,Rotation2d.fromDegrees(0));
+        return m_robotPose;
     }
 
+    /**
+     * This function is never used and will interact poorly with getHeading(), giving weird results.
+     * We will probably just remove it. - Kenny 11/13/2024
+     * @param pose The new robot pose
+     */
+    @Deprecated
     @Override
     public void resetPose(Pose2d pose) {
         m_robotPose = pose;
     }
 
+    @Override
+    public Rotation2d getHeading() {
+        return m_robotPose.getRotation().minus(m_referenceRotation);
+    }
 
     /**
-     * Sets headingOffset variable to the current heading when function is called
+     * The robot heading is calculated as (CurrentAngle - ReferenceAngle) where ReferenceAngle
+     * is arbitrary and initialized to zero.
      */
     @Override
     public void resetHeading() {
-//        m_odo.updatePose(new Pose2d(m_odo.getPose().getX(), m_odo.getPose().getY(), Rotation2d.fromDegrees(0)));
-          headingOffset = getHeading();
-    }
-
-
-    /**
-     * Returns the new heading relative to when the resetHeading() function was called.
-     * If resetHeading() was never called, the value of it is zero. This allows the driver to
-     * press a button, which calls resetHeading(), and effectively resets the robot direction
-     * when the button was pressed to the new "Foward" in field relative drive. This is useful
-     * to counteract forward drifting over time.
-     *
-     * @return
-     */
-    @Override
-    public Rotation2d getAdjustedHeading() {
-        return getHeading().minus(headingOffset);
+        m_referenceRotation = m_robotPose.getRotation();
     }
 
     public void setTargetPose(Pose2d targetPose) {
@@ -231,6 +214,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
 
+
+
         // Do some angle wrapping to ensure the shortest path is taken to get to the rotation target
         double normalizedRotationRad = m_robotPose.getHeading();
         if(normalizedRotationRad < 0) {
@@ -248,15 +233,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
         FtcDashboard motorVelocityPacket = FtcDashboard.getInstance();
         motorVelocityPacket.sendTelemetryPacket(motorVelocities);
 
-        /*
-        The if statement below is a bandaid solution to avoid the auto from showcasing unwanted translation behaviors when initial angle is not
-        set to zero in Autonomous. I am unsure as to why this issue is occuring, but to avoid it, if we are already at the target translation, and
-        simply need to rotate, vX and vY will be set to zero.
-         */
-
             // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
-            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading());
-            move(speeds);
+        Translation2d transformedVelocities = fieldRelativeToAllianceRelative(new Translation2d(vX, vY));
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(transformedVelocities.getX(),
+                transformedVelocities.getY(), vOmega, getHeading());
+        move(speeds);
 
     }
 
@@ -286,7 +267,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
         robotPose.put("Y value", m_robotPose.getY());
         robotPose.put("Target X value", targetXValue);
         robotPose.put("Target Y value", targetYValue);
-        robotPose.put("Initial Angle Rad:", m_initialAngleRad);
         robotPose.put("Current Angle Rad:", currentAngleRad);
 
         FtcDashboard robotPosePacket = FtcDashboard.getInstance();

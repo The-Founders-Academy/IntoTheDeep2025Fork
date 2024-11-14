@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
@@ -35,8 +36,6 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
     public abstract Pose2d getPose();
     public abstract void resetPose(Pose2d pose);
     public abstract void resetHeading();
-
-    public abstract Rotation2d getAdjustedHeading();
 
     public BaseMecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         m_mecanumConfigs = mecanumConfigs;
@@ -79,18 +78,28 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         move(speeds);
     }
 
+    public Translation2d fieldRelativeToAllianceRelative(Translation2d translation) {
+        Translation2d transformedTranslation;
+        if(m_alliance == Alliance.RED) {
+            transformedTranslation = new Translation2d(translation.getY(), -translation.getX());
+        } else {
+            transformedTranslation = new Translation2d(-translation.getY(), translation.getX());
+        }
+        return transformedTranslation;
+    }
+
     /**
      * @param xPercentVelocity The forward velocity. Ranges from -1 to 1.
      * @param yPercentVelocity The leftward (from the driverstation) velocity. Ranges from -1 to 1.
      * @param omegaPercentVelocity The rotational velocity. Positive indicates cc rotation. Ranges from -1 to 1.
      */
-    public void moveFieldRelative(double xPercentVelocity, double yPercentVelocity, double omegaPercentVelocity) {
+    public void moveAllianceRelative(double xPercentVelocity, double yPercentVelocity, double omegaPercentVelocity) {
         double vXMps = xPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
         double vYMps = yPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
         double omegaRps = omegaPercentVelocity * m_mecanumConfigs.getMaxRobotRotationRps();
         ChassisSpeeds speeds;
 
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getAdjustedHeading());
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getHeading());
 
         TelemetryPacket heading = new TelemetryPacket();
         heading.put("heading", getHeading());
