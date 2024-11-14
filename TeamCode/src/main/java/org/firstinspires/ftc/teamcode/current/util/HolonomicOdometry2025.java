@@ -53,6 +53,12 @@ public class HolonomicOdometry2025 extends Odometry {
         prevHorizontalEncoder = 0;
     }
 
+    /*
+    A note about coordinates and encoders
+    1) The horizontal encoders should record positive displacements when the robot moves forward in its frame
+    2) The perpendicular encoder should record positive displacements when the robot moves to the left in its frame
+    3) The angle increases counterclockwise (see below)
+     */
     public void update(double leftEncoderPos, double rightEncoderPos, double horizontalEncoderPos) {
         double deltaLeftEncoder = leftEncoderPos - prevLeftEncoder;
         double deltaRightEncoder = rightEncoderPos - prevRightEncoder;
@@ -71,7 +77,7 @@ public class HolonomicOdometry2025 extends Odometry {
         double dw = (angle.minus(previousAngle).getRadians());
 
         double dx = (deltaLeftEncoder + deltaRightEncoder) / 2;
-        double dy = deltaHorizontalEncoder - (centerWheelOffset * dw);
+        double dy = deltaHorizontalEncoder + (centerWheelOffset * dw); // The horizontal value and dw cancel each other out when we are just rotating
 
         Twist2d twist2d = new Twist2d(dx, dy, dw);
 

@@ -49,8 +49,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
     private PIDController m_translationYController;
     private PIDController m_rotationController;
 
-    private double targetXValue;
-    private double targetYValue;
     private Pose2d m_robotPose;
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
@@ -81,9 +79,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
         m_robotPose = initialPose;
 
-        // Stored for telemetry purposes
-        targetXValue = initialPose.getX();
-        targetYValue = initialPose.getY();
         m_referenceRotation = initialPose.getRotation();
 
         if(m_alliance == Alliance.RED) {
@@ -154,17 +149,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
         }
 
         m_rotationController.setSetPoint(targetRotation);
-
-        TelemetryPacket targetvsOdoPose = new TelemetryPacket();
-
-        targetvsOdoPose.put("Target X:", m_targetPose.getX());
-        targetvsOdoPose.put("Target Y:", m_targetPose.getY());
-        targetvsOdoPose.put("Target Rotation:", m_targetPose.getRotation());
-        targetvsOdoPose.put("Real X:", m_odo.getPose().getX());
-        targetvsOdoPose.put("Real Y:", m_odo.getPose().getY());
-        targetvsOdoPose.put("Real Rotation:", m_odo.getPose().getRotation());
-
-        FtcDashboard.getInstance().sendTelemetryPacket(targetvsOdoPose);
     }
 
     public boolean atTargetPose() {
@@ -245,18 +229,66 @@ public class Mecanum2025 extends BaseMecanumDrive {
     public void periodic() {
         tunePIDS();
         m_odo.updatePose();
-
         m_robotPose = m_odo.getPose();
 
-        TelemetryPacket robotPose = new TelemetryPacket();
-        robotPose.put("X value", m_robotPose.getX());
-        robotPose.put("Y value", m_robotPose.getY());
-        robotPose.put("Target X value", targetXValue);
-        robotPose.put("Target Y value", targetYValue);
+        TelemetryPacket firstTestDebuggingInfo = new TelemetryPacket();
 
-        FtcDashboard robotPosePacket = FtcDashboard.getInstance();
-        robotPosePacket.sendTelemetryPacket(robotPose);
-        
+        /*
+        TODO Test #1 (record results):
+            1) Initiate a teleopmode with the initial pose at (0x, 0y, 0deg) (alliance does not matter)
+            2) Instead of using the controller, physically move the robot forward while observing how its x coordinate changes
+            3) Do the same thing for the y component
+            4) Rotate the robot counterclockwise and observe how all three components change. Only the angle-related quantities should.
+            5) Repeat with the initial pose at (0, 0, 90deg), (1,1,0deg), (1,1,90deg)
+            You should expect the following results for each initial condition:
+            (0, 0, 0deg): Pushing the robot forward while it is at 0deg increases only the x coordinate, while pushing it to the left only increases the y coordinate
+            (0, 0, 90deg): Pushing the robot forward while it is at 90deg increases only the y coordinate, while pushing it to the left decreases the x coordinate
+            You should expect exactly the same results for the (1,1) tests with corresponding angles.
+         */
+        firstTestDebuggingInfo.put("Recorded x", m_odo.getPose().getX());
+        firstTestDebuggingInfo.put("Recorded y", m_odo.getPose().getY());
+        firstTestDebuggingInfo.put("Recorded theta (abs coord)", m_odo.getPose().getRotation().getDegrees());
+
+        // Comment me out when you're done with the first test
+        FtcDashboard.getInstance().sendTelemetryPacket(firstTestDebuggingInfo);
+
+        TelemetryPacket secondTestDebuggingInfo = new TelemetryPacket();
+
+
+        /*
+        TODO Test #2 (record results):
+            In this test you will simply check that the alliance-relative heading works as expected
+            1) Initiate a teleopmode with the intial pose at (0, 0, 90) and on the red alliance
+            2) Check that "Recorded heading" is 0 degrees and check that when pushing the robot ccw, it increases heading
+            3) Initiate the same teleopmode with the initial pose (0, 0, -90) and on the blue alliance
+            4) Do the same checks
+            5) If the above worked, try using the controller to drive the robot in both orientations and try to use resetHeading() and see if everything still works
+         */
+        secondTestDebuggingInfo.put("Recorded x", m_odo .getPose().getX());
+        secondTestDebuggingInfo.put("Recorded y", m_odo .getPose().getX());
+        secondTestDebuggingInfo.put("Recorded theta (abs coord)", m_odo .getPose().getX());
+        secondTestDebuggingInfo.put("Recorded heading (alliance relative coordinates)", m_odo .getPose().getX());
+
+        // FtcDashboard.getInstance().sendTelemetryPacket(secondTestDebuggingInfo);
+
+
+        TelemetryPacket thirdTestDebuggingInfo = new TelemetryPacket();
+
+        /**
+         * TODO Test #3 (record results):
+         *  This is the final test and will confirm whether auto works
+         *  1) Run your normal auto tests, record videos and graphs
+         *  2) If it works, then we're done worrying about this forever :)
+         */
+        thirdTestDebuggingInfo.put("Recorded x", m_odo .getPose().getX());
+        thirdTestDebuggingInfo.put("Recorded y", m_odo .getPose().getX());
+        thirdTestDebuggingInfo.put("Recorded theta", m_odo .getPose().getX());
+        thirdTestDebuggingInfo.put("Target x", m_translationXController.getSetPoint());
+        thirdTestDebuggingInfo.put("Target y", m_translationYController.getSetPoint());
+        thirdTestDebuggingInfo.put("Target theta", m_rotationController.getSetPoint());
+
+        // FtcDashboard.getInstance().sendTelemetryPacket(thirdTestDebuggingInfo);
+
 
     }
 
