@@ -114,7 +114,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), initialPose.getRotation()));
+        m_odo.updatePose(new Pose2d(initialPose.getX(), -initialPose.getY(), Rotation2d.fromDegrees(0)));
 
     }
 
@@ -274,8 +274,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         tunePIDS();
         m_odo.updatePose();
 
-        double currentAngleRad = m_odo.getPose().getRotation().getRadians();
-
+        double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
 
         // TODO switched from X, -Y, to Y, X
         m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
