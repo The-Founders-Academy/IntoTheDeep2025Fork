@@ -10,13 +10,13 @@ import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.teamcode.current.util.HolonomicOdometry2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.MathUtil;
@@ -54,7 +54,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
     private Pose2d m_robotPose;
     private Pose2d m_targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
-    private HolonomicOdometry m_odo;
+    private HolonomicOdometry2025 m_odo;
 
     private Rotation2d m_referenceRotation = Rotation2d.fromDegrees(0); // Used for heading
 
@@ -99,7 +99,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         right.setDirection(Motor.Direction.REVERSE);
         Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
 
-        m_odo = new HolonomicOdometry(
+        m_odo = new HolonomicOdometry2025(
                 left::getDistance,
                 right::getDistance,
                 horizontal::getDistance,
@@ -153,7 +153,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
             targetRotation = m_targetPose.getHeading();
         }
 
-
         m_rotationController.setSetPoint(targetRotation);
 
         TelemetryPacket targetvsOdoPose = new TelemetryPacket();
@@ -166,16 +165,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
         targetvsOdoPose.put("Real Rotation:", m_odo.getPose().getRotation());
 
         FtcDashboard.getInstance().sendTelemetryPacket(targetvsOdoPose);
-
-
     }
 
     public boolean atTargetPose() {
         return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
-    }
-
-    public boolean atTargetPosition() {
-        return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint());
     }
 
     public void resetPIDS() {
@@ -213,8 +206,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
         double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
-
-
 
         // Do some angle wrapping to ensure the shortest path is taken to get to the rotation target
         double normalizedRotationRad = m_robotPose.getHeading();
@@ -255,19 +246,13 @@ public class Mecanum2025 extends BaseMecanumDrive {
         tunePIDS();
         m_odo.updatePose();
 
-        double currentAngleRad = m_odo.getPose().getRotation().getRadians();
-
-
-        // TODO switched from X, -Y, to Y, X
-        m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
-        
+        m_robotPose = m_odo.getPose();
 
         TelemetryPacket robotPose = new TelemetryPacket();
         robotPose.put("X value", m_robotPose.getX());
         robotPose.put("Y value", m_robotPose.getY());
         robotPose.put("Target X value", targetXValue);
         robotPose.put("Target Y value", targetYValue);
-        robotPose.put("Current Angle Rad:", currentAngleRad);
 
         FtcDashboard robotPosePacket = FtcDashboard.getInstance();
         robotPosePacket.sendTelemetryPacket(robotPose);
