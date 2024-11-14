@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.current.util;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Twist2d;
@@ -77,7 +79,15 @@ public class HolonomicOdometry2025 extends Odometry {
         double dw = (angle.minus(previousAngle).getRadians());
 
         double dx = (deltaLeftEncoder + deltaRightEncoder) / 2;
-        double dy = deltaHorizontalEncoder + (centerWheelOffset * dw); // The horizontal value and dw cancel each other out when we are just rotating
+        double dy = deltaHorizontalEncoder - (centerWheelOffset * dw); // The horizontal value and dw cancel each other out when we are just rotating
+        TelemetryPacket differentialEquations = new TelemetryPacket();
+        differentialEquations.put("dx: ", dx);
+        differentialEquations.put("dy: ", dy);
+        differentialEquations.put("dw: ", dw);
+
+        FtcDashboard.getInstance().sendTelemetryPacket(differentialEquations);
+
+
 
         Twist2d twist2d = new Twist2d(dx, dy, dw);
 
