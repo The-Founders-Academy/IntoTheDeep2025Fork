@@ -93,6 +93,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         Encoder right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
         right.setDirection(Motor.Direction.REVERSE);
         Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
+        horizontal.setDirection(Motor.Direction.REVERSE);
 
         m_odo = new HolonomicOdometry2025(
                 left::getDistance,

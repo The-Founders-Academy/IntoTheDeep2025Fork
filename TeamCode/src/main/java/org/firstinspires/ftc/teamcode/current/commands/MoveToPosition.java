@@ -27,7 +27,7 @@ public class MoveToPosition extends CommandBase {
 
     @Override
     public void execute() {
-        m_mecanumDrive.moveFieldRelative(0.5,0.5,0.5);
+        m_mecanumDrive.moveAllianceRelative(0.5,0.5,0.5);
     }
 
     public boolean isFinished() {

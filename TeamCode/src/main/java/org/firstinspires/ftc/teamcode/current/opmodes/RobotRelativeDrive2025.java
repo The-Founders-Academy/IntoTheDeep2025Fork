@@ -59,7 +59,7 @@ public class RobotRelativeDrive2025 extends LinearOpMode {
 
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
-        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
+        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
         m_armSubsystem = new Arm2025(hardwareMap);
 
         double armPosition = (int) m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT();
