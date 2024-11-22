@@ -31,21 +31,21 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
                 // Arm is roughly 40
                 // 0 makes the arm face down on the Netlify
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 100, Rotation2d.fromDegrees(270))).withTimeout(3000),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(1000),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(20), //At this point, you have 5 seconds to place a specimen into the robot to continue the auto
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 115, Rotation2d.fromDegrees(270))).withTimeout(3000),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 110, Rotation2d.fromDegrees(180))).withTimeout(2000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 130, Rotation2d.fromDegrees(90))).withTimeout(2000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 100, Rotation2d.fromDegrees(90))).withTimeout(2000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 130, Rotation2d.fromDegrees(90))).withTimeout(2000),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(2000),
-                //new DriveToPosition(m_mecanumDrive, new Pose2d(3, 110, Rotation2d.fromDegrees(90))).withTimeout(2000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 140, Rotation2d.fromDegrees(90))).withTimeout(3000),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1000),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF).withTimeout(20),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(140, 140, Rotation2d.fromDegrees(90))),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 100, Rotation2d.fromDegrees(270))).withTimeout(3000),
+//                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(1000),
+//                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(20), //At this point, you have 5 seconds to place a specimen into the robot to continue the auto
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 115, Rotation2d.fromDegrees(270))).withTimeout(3000),
+//                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 110, Rotation2d.fromDegrees(180))).withTimeout(2000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 130, Rotation2d.fromDegrees(90))).withTimeout(2000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 100, Rotation2d.fromDegrees(90))).withTimeout(2000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 130, Rotation2d.fromDegrees(90))).withTimeout(2000),
+//                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(2000),
+//                //new DriveToPosition(m_mecanumDrive, new Pose2d(3, 110, Rotation2d.fromDegrees(90))).withTimeout(2000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 140, Rotation2d.fromDegrees(90))).withTimeout(3000),
+//                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1000),
+//                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF).withTimeout(20),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(140, 140, Rotation2d.fromDegrees(90))),
                 //new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(2000),
 
                 //End of current auto
