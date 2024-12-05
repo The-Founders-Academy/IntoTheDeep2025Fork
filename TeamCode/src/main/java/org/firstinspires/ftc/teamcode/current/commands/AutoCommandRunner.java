@@ -41,6 +41,37 @@ public class AutoCommandRunner extends SequentialCommandGroup {
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 20, Rotation2d.fromDegrees(270))).withTimeout(1000), //135
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 140, Rotation2d.fromDegrees(270))).withTimeout(1250),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
+
+                // NEW Pushes third specimen into zone
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(3000), //135
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 20, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
+
+
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
+
+
+
+                // Grabbing Time, Don't Touch
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 90, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 106, Rotation2d.fromDegrees(270))).withTimeout(1500),
+
+                // Parallel
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(750),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1750),
+
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
+
+
+                // NEW Hangs third specimen
+
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 120, Rotation2d.fromDegrees(270))).withTimeout(3000),
+
+
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
 
@@ -56,6 +87,10 @@ public class AutoCommandRunner extends SequentialCommandGroup {
                 new DriveToPosition(m_mecanumDrive, new Pose2d(8, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
+
+
+
+
 
                 // second push
 
