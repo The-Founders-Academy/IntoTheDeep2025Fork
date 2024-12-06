@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.current.commands;
 
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelRaceGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -21,79 +23,103 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
 
         addCommands(
+
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(1),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
 
-                // Parallel
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(3, 102, Rotation2d.fromDegrees(90))).withTimeout(1750),
+                // Hooks preloaded specimen onto bar
+                new ParallelCommandGroup(
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(3, 102, Rotation2d.fromDegrees(90))).withTimeout(1750)
+                ),
 
+                // Deposits preloaded specimen onto bar
                 new DriveToPosition(m_mecanumDrive, new Pose2d(3, 135, Rotation2d.fromDegrees(90))).withTimeout(600),
-                // new DriveToPosition(m_mecanumDrive, new Pose2d(3, 140, Rotation2d.fromDegrees(90))).withTimeout(300),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF).withTimeout(1),
 
-                // Parallel
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-89 , 87, Rotation2d.fromDegrees(270))).withTimeout(1250),
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1000),
+                // Drives next to 3 pre-placed specimen
+                new ParallelCommandGroup(
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-89 , 87, Rotation2d.fromDegrees(270))).withTimeout(1250),
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1000)
+                ),
 
+
+                // Pushes second specimen into HP zone
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(900),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 20, Rotation2d.fromDegrees(270))).withTimeout(1000), //135
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 20, Rotation2d.fromDegrees(270))).withTimeout(1000),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 140, Rotation2d.fromDegrees(270))).withTimeout(1250),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
 
-                // NEW Pushes third specimen into zone
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(3000), //135
+                // Pushes Third Specimen into HP Zone
+                new DriveToPosition(m_mecanumDrive, new Pose2d(500, 100, Rotation2d.fromDegrees(270))).withTimeout(100),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 20, Rotation2d.fromDegrees(270))).withTimeout(3000),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 20, Rotation2d.fromDegrees(270))).withTimeout(3000),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
 
+                // Pushes Fourth Specimen into HP Zone
+                new DriveToPosition(m_mecanumDrive, new Pose2d(500, 140, Rotation2d.fromDegrees(270))).withTimeout(100),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 20, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-158, 20, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-158, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
+//                new DriveToPosition(m_mecanumDrive, new Pose2d(-168, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
 
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
+                // Moves to collect Second specimen
+                new ParallelCommandGroup(
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
+                        new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
 
+                        // Grabbing Time, Don't Touch
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 90, Rotation2d.fromDegrees(270))).withTimeout(3000)
+                ),
 
-
-                // Grabbing Time, Don't Touch
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 90, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                // Actually collects second specimen
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 106, Rotation2d.fromDegrees(270))).withTimeout(1500),
 
-                // Parallel
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(750),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1750),
+                // Moves and rotates next to bar
+                new ParallelCommandGroup(
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(750),
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-20, 150, Rotation2d.fromDegrees(90))).withTimeout(1750)
+                ),
 
+                // Hanging second specimen
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(8, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
 
 
-                // NEW Hangs third specimen
+                // Drives to collect third specimen
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 120, Rotation2d.fromDegrees(270))).withTimeout(3000),  // timeout can be reduced
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 120, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                // Moves to collect third specimen
+                new ParallelRaceGroup(
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
+                        new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
 
+                        // Grabbing Time, Don't Touch
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 90, Rotation2d.fromDegrees(270))).withTimeout(3000)
+                ),
 
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
-
-                // Grabbing Time, Don't Touch
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 90, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                // Actually collects third specimen
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 106, Rotation2d.fromDegrees(270))).withTimeout(1500),
 
-                // Parallel
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(750),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1750),
+                // Moves and rotates next to bar
+                new ParallelRaceGroup(
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(750),
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(13, 150, Rotation2d.fromDegrees(90))).withTimeout(3000)//1750
+                ),
 
+                // Hooks third specimen
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(8, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(13, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(13, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
 
 
-
-
-
-                // second push
-
+                // moves back to starting position.
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-20, 161, Rotation2d.fromDegrees(270))).withTimeout(3000)
         );
     }

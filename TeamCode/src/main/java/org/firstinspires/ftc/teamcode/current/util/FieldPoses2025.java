@@ -11,7 +11,7 @@ public class FieldPoses2025 {
     /*   For our 4 starting alliance positions, there is no dedicated starting spot, it can be anywhere as long as it
      *   is touching the alliance wall. But we should pick a spot and make sure we can position the robot there every time,
      *   maybe use the edge of wall pieces to do this. Note that the robot cannot start touching any tape.
-     *   These are example starting poses, they should be changed if needed.
+     *
      */
 
 
