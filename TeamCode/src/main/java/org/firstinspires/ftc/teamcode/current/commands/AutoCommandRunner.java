@@ -44,16 +44,16 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
 
                 // Pushes second specimen into HP zone
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(900),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 20, Rotation2d.fromDegrees(270))).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(500),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 20, Rotation2d.fromDegrees(270))).withTimeout(500),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 140, Rotation2d.fromDegrees(270))).withTimeout(1250),
 //                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
 
                 // Pushes Third Specimen into HP Zone
-                new DriveToPosition(m_mecanumDrive, new Pose2d(500, 100, Rotation2d.fromDegrees(270))).withTimeout(150),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 20, Rotation2d.fromDegrees(270))).withTimeout(1250),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 20, Rotation2d.fromDegrees(270))).withTimeout(1000),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 140, Rotation2d.fromDegrees(270))).withTimeout(1250),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(500, 100, Rotation2d.fromDegrees(270))).withTimeout(150) ,
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-140, 20, Rotation2d.fromDegrees(270))).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 20, Rotation2d.fromDegrees(270))).withTimeout(900),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 140, Rotation2d.fromDegrees(270))).withTimeout(1000),
 //                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
 
                 // Pushes Fourth Specimen into HP Zone
