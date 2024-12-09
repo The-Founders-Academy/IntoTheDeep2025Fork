@@ -28,12 +28,12 @@ public class AutoCommandRunner extends SequentialCommandGroup {
                 // Hooks preloaded specimen onto bar
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(1000),
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(3, 102, Rotation2d.fromDegrees(90))).withTimeout(1750)
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(3, 102, Rotation2d.fromDegrees(90))).withTimeout(1450)   // was 1750
                 ),
 
                 // Deposits preloaded specimen onto bar
                 new DriveToPosition(m_mecanumDrive, new Pose2d(3, 135, Rotation2d.fromDegrees(90))).withTimeout(600),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(600),    // was 900
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF).withTimeout(1),
 
                 // Drives next to 3 pre-placed specimen
@@ -45,8 +45,8 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
                 // Pushes second specimen into HP zone
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-89, 20, Rotation2d.fromDegrees(270))).withTimeout(500),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 20, Rotation2d.fromDegrees(270))).withTimeout(500),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 140, Rotation2d.fromDegrees(270))).withTimeout(1250),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 20, Rotation2d.fromDegrees(270))).withTimeout(800),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-130, 140, Rotation2d.fromDegrees(270))).withTimeout(1000), // was 1250
 //                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
 
                 // Pushes Third Specimen into HP Zone
@@ -70,7 +70,7 @@ public class AutoCommandRunner extends SequentialCommandGroup {
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(700),
 
                         // Grabbing Time, Don't Touch
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 93, Rotation2d.fromDegrees(270))).withTimeout(2500)
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 93, Rotation2d.fromDegrees(270))).withTimeout(2000)
                 ),
 
                 // Actually collects second specimen
@@ -84,13 +84,13 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
                 // Hanging second specimen
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(10, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(10, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(10, 100, Rotation2d.fromDegrees(90))).withTimeout(1000),     // was 1500
+                new DriveToPosition(m_mecanumDrive, new Pose2d(10, 140, Rotation2d.fromDegrees(90))).withTimeout(800),      // was 1000
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
 
 
                 // Drives to collect third specimen
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 120, Rotation2d.fromDegrees(270))).withTimeout(3000),  // timeout can be reduced
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 120, Rotation2d.fromDegrees(270))).withTimeout(2000),  // timeout can be reduced
 
                 // Moves to collect third specimen
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
@@ -114,12 +114,18 @@ public class AutoCommandRunner extends SequentialCommandGroup {
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(15, 100, Rotation2d.fromDegrees(90))).withTimeout(1500),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(15, 140, Rotation2d.fromDegrees(90))).withTimeout(1000),
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(900),
+                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(1),
 
 
-                // moves back to starting position.
+
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-20, 161, Rotation2d.fromDegrees(270))).withTimeout(3000)
+
+                // Puts down arm to get ready for teleop mode
+                new ParallelCommandGroup(
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-20, 161, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1200)
+                )
+
 
 
 
