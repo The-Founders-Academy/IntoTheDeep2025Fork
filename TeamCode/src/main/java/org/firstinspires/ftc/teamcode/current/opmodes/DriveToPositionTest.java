@@ -27,7 +27,7 @@ public class DriveToPositionTest extends CommandOpMode {
     public void initialize() {
         m_driver = new CommandGamepad(gamepad1, 0, 0);
         MecanumConfigs mecanumConfigs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
-        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(-20, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
+        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(-42.38, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
         // sets initial pose, should reflect where robot is physically placed
         m_armSubsystem = new Arm2025(hardwareMap);
 

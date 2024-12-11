@@ -36,7 +36,7 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
     public void initialize() {
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
-        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(10, 10, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
+        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(-20, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
         armSubsystem = new Arm2025(hardwareMap);
 
         m_driver = new CommandGamepad(gamepad1, 0.2, 0.2);

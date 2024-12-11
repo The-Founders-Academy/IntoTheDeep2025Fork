@@ -127,7 +127,7 @@ public class AutoCommandRunner extends SequentialCommandGroup {
 
                 // Puts down arm to get ready for teleop mode
                 new ParallelCommandGroup(
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(-20, 161, Rotation2d.fromDegrees(270))).withTimeout(3000),
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-42.38, 161, Rotation2d.fromDegrees(270))).withTimeout(3000),
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1200)
                 )
 
