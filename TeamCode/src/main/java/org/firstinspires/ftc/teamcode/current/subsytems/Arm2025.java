@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.current.subsytems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -13,6 +14,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
 
 public class Arm2025 extends SubsystemBase {
+
+    @Config
+    public static class Arm2025PARAMS {
+
+        /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
+        public static double WRIST_FOLDED_IN = 0.62; //Previous: 0.82
+        public static double WRIST_FOLDED_OUT = 0.3; // Previous: 0.5
+    } // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
     private final Servo wrist;
     private final DcMotor armMotor;
@@ -39,9 +48,6 @@ public class Arm2025 extends SubsystemBase {
     final double INTAKE_DEPOSIT = 0.5;
 
 
-    /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN = 0.85;
-    final double WRIST_FOLDED_OUT = 0.54;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
@@ -89,11 +95,11 @@ public class Arm2025 extends SubsystemBase {
     }
 
     public double getWRIST_FOLDED_IN() {
-        return WRIST_FOLDED_IN;
+        return Arm2025PARAMS.WRIST_FOLDED_IN;
     }
 
     public double getWRIST_FOLDED_OUT() {
-        return WRIST_FOLDED_OUT;
+        return Arm2025PARAMS.WRIST_FOLDED_OUT;
     }
 
     public double getINTAKE_COLLECT() { return INTAKE_COLLECT; }

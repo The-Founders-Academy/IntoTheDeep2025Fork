@@ -24,7 +24,7 @@ public class AutoTest extends CommandOpMode {
     public void initialize() {
         MecanumConfigs mecanumConfigs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
         // Pose is set to Blue alliance, closer to blue samples. Control click https://screamingeagles2025.netlify.app/ to see exactly where it's positioned
-        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(0, 0, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.RED);
+        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(-20, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.RED);
         m_armSubsystem = new Arm2025(hardwareMap);
 
 
