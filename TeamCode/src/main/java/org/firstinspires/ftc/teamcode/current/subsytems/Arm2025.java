@@ -18,28 +18,30 @@ public class Arm2025 extends SubsystemBase {
     @Config
     public static class Arm2025PARAMS {
 
+        public static double ARM_TICKS_PER_DEGREE =
+                28 // number of encoder ticks per rotation of the bare motor
+                        * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                        * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+                        * 1 / 360.0; // we want ticks per degree, not per rotation
+
+
+        public static double ARM_COLLAPSED_INTO_ROBOT = 0;
+        public static double ARM_COLLECT = 239.5 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;    // was 230
+        public static double ARM_SCORE_SPECIMEN = 149 * ARM_TICKS_PER_DEGREE;       // was 148
+        public static double ARM_SCORE_SAMPLE_IN_LOW = 140 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
+
         /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-        public static double WRIST_FOLDED_IN = 0.62; //Previous: 0.82
-        public static double WRIST_FOLDED_OUT = 0.3; // Previous: 0.5
+        public static double WRIST_FOLDED_IN = 0.52; //Previous: 0.82
+        public static double WRIST_FOLDED_OUT = 0.19; // Previous: 0.5
     } // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
     private final Servo wrist;
     private final DcMotor armMotor;
     private final CRServo intake;
 
-    final double ARM_TICKS_PER_DEGREE =
-            28 // number of encoder ticks per rotation of the bare motor
-                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
-                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
-                    * 1 / 360.0; // we want ticks per degree, not per rotation
-
-    final double ARM_COLLAPSED_INTO_ROBOT = 0;
-    final double ARM_COLLECT = 239.5 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;    // was 230
-    final double ARM_SCORE_SPECIMEN = 151.5 * ARM_TICKS_PER_DEGREE;       // was 148
-    final double ARM_SCORE_SAMPLE_IN_LOW = 140 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
@@ -50,9 +52,9 @@ public class Arm2025 extends SubsystemBase {
 
 
     /* A number in degrees that the triggers can adjust the arm position by */
-    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+    final double FUDGE_FACTOR = 15 * Arm2025PARAMS.ARM_TICKS_PER_DEGREE;
 
-    public double armPosition = ARM_COLLAPSED_INTO_ROBOT;
+    public double armPosition = Arm2025PARAMS.ARM_COLLAPSED_INTO_ROBOT;
 
 
     public Arm2025(final HardwareMap hardwareMap) {
@@ -63,35 +65,35 @@ public class Arm2025 extends SubsystemBase {
     }
 
     public double getARM_TICKS_PER_DEGREE() {
-        return ARM_TICKS_PER_DEGREE;
+        return Arm2025PARAMS.ARM_TICKS_PER_DEGREE;
     }
 
     public double getARM_COLLAPSED_INTO_ROBOT() {
-        return ARM_COLLAPSED_INTO_ROBOT;
+        return Arm2025PARAMS.ARM_COLLAPSED_INTO_ROBOT;
     }
 
     public double getARM_COLLECT() {
-        return ARM_COLLECT;
+        return Arm2025PARAMS.ARM_COLLECT;
     }
 
     public double getARM_CLEAR_BARRIER() {
-        return ARM_CLEAR_BARRIER;
+        return Arm2025PARAMS.ARM_CLEAR_BARRIER;
     }
 
     public double getARM_SCORE_SPECIMEN() {
-        return ARM_SCORE_SPECIMEN;
+        return Arm2025PARAMS.ARM_SCORE_SPECIMEN;
     }
 
     public double getARM_SCORE_SAMPLE_IN_LOW() {
-        return ARM_SCORE_SAMPLE_IN_LOW;
+        return Arm2025PARAMS.ARM_SCORE_SAMPLE_IN_LOW;
     }
 
     public double getARM_ATTACH_HANGING_HOOK() {
-        return ARM_ATTACH_HANGING_HOOK;
+        return Arm2025PARAMS.ARM_ATTACH_HANGING_HOOK;
     }
 
     public double getARM_WINCH_ROBOT() {
-        return ARM_WINCH_ROBOT;
+        return Arm2025PARAMS.ARM_WINCH_ROBOT;
     }
 
     public double getWRIST_FOLDED_IN() {
