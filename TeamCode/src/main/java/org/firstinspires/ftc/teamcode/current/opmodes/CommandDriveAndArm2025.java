@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp()
 public class CommandDriveAndArm2025 extends CommandOpMode {
@@ -34,6 +35,7 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
     private Arm2025 armSubsystem;
     @Override
     public void initialize() {
+
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
         m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(42.38, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
@@ -46,7 +48,8 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
         // Driver Commands
         m_driver.buttonA().whenPressed(new InstantCommand(() -> m_mecanumDrive.resetHeading()));
 
-        // Arm Commands
+
+        // Operator Commands
         m_operator.buttonA().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT));
         m_operator.buttonB().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_CLEAR_BARRIER));
         m_operator.buttonX().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW));
@@ -60,6 +63,9 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
         m_operator.rightBumper().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT));
         m_operator.buttonY().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF));
 
+
+        m_operator.leftBumper().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED));
+        m_operator.rightBumper().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED));
 //        new Trigger(() -> m_driver.leftTrigger() > 0.25).whenActive(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.LEFT_TRIGGER_PRESSED));
 //        new Trigger(() -> m_driver.rightTrigger() > 0.25).whenActive(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.RIGHT_TRIGGER_PRESSED));
 

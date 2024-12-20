@@ -19,7 +19,12 @@ public class ArmCommand extends CommandBase {
 
         LEFT_TRIGGER_PRESSED,
 
+        RIGHT_BUMPER_PRESSED,
+
+        LEFT_BUMPER_PRESSED,
+
         RIGHT_TRIGGER_PRESSED
+
     }
 
     private Arm2025 m_armSubsystem;
@@ -46,25 +51,31 @@ public class ArmCommand extends CommandBase {
     public void initialize() {
         switch (m_armPosition) {
             case ARM_COLLAPSED_INTO_ROBOT:
+                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_IN());
                 break;
 
             case ARM_COLLECT:
+                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_COLLECT());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_OUT());
                 break;
 
             case ARM_CLEAR_BARRIER:
+                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_CLEAR_BARRIER());
                 break;
 
             case ARM_SCORE_SPECIMEN:
+                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_SCORE_SPECIMEN());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_IN());
                 break;
 
             case ARM_SCORE_SAMPLE_IN_LOW:
+                // TODO when working rename to ARM_SCORE_SAMPLE_IN_HIGH
+                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_HIGH_BASKET());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_SCORE_SAMPLE_IN_LOW());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_OUT());
                 break;
@@ -84,6 +95,23 @@ public class ArmCommand extends CommandBase {
             case RIGHT_TRIGGER_PRESSED:
                 m_armSubsystem.setLeftArmPower(m_operator);
                 break;
+
+            case RIGHT_BUMPER_PRESSED:
+                // While bumper is held and the lift is above the collapsed position
+                while(m_operator.leftBumper().get() && m_armSubsystem.liftPosition() < m_armSubsystem.getLIFT_HIGH_BASKET()) {
+                    m_armSubsystem.moveLiftUp();
+                }
+                m_armSubsystem.stopLift();
+                break;
+
+            case LEFT_BUMPER_PRESSED:
+                // While bumper is held and the lift is below the max scoring position
+                while(m_operator.rightBumper().get() && m_armSubsystem.liftPosition() > m_armSubsystem.getLIFT_COLLAPSED()) {
+                    m_armSubsystem.moveLiftDown();
+                }
+                m_armSubsystem.stopLift();
+                break;
+
         }
 
     }

@@ -36,10 +36,14 @@ public class Arm2025 extends SubsystemBase {
         /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
         public static double WRIST_FOLDED_IN = 0.52; //Previous: 0.82
         public static double WRIST_FOLDED_OUT = 0.19; // Previous: 0.5
-    } // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
+        // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
+        public static double LIFT_COLLAPSED = 0;
+        public static double LIFT_HIGH_BASKET = 500; // TODO placeholder value, change soon
+    }
     private final Servo wrist;
     private final DcMotor armMotor;
+    private final DcMotor liftMotor;
     private final CRServo intake;
 
 
@@ -62,6 +66,7 @@ public class Arm2025 extends SubsystemBase {
         wrist = hardwareMap.get(Servo.class, "wrist");
         armMotor = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(CRServo.class, "intake");
+        liftMotor = hardwareMap.get(DcMotor.class, "lift");
     }
 
     public double getARM_TICKS_PER_DEGREE() {
@@ -108,6 +113,9 @@ public class Arm2025 extends SubsystemBase {
     public double getINTAKE_OFF() { return INTAKE_OFF; }
     public double getINTAKE_DEPOSIT() { return INTAKE_DEPOSIT; }
 
+    public double getLIFT_COLLAPSED() { return Arm2025PARAMS.LIFT_COLLAPSED; }
+    public double getLIFT_HIGH_BASKET() { return Arm2025PARAMS.LIFT_HIGH_BASKET; }
+
     public void setArmPosition(double armPosition) {
         armMotor.setTargetPosition((int) (armPosition));
 
@@ -134,6 +142,34 @@ public class Arm2025 extends SubsystemBase {
     public void setIntake(double intakeSpeed) {
         // Same as motor, speed is between -1 and 1
         intake.setPower(intakeSpeed);
+    }
+
+    public void setLiftPosition(double liftPosition) {
+        liftMotor.setTargetPosition((int) (liftPosition));
+
+        ((DcMotorEx) liftMotor).setVelocity(2100);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public double liftPosition() {
+        return liftMotor.getCurrentPosition();
+    }
+
+    public void moveLiftDown() {
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setPower(-0.2);
+
+    }
+
+    public void moveLiftUp() {
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setPower(0.2);
+    }
+
+
+    public void stopLift() {
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setPower(0);
     }
 
 }
