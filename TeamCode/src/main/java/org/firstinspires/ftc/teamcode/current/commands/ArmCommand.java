@@ -51,24 +51,24 @@ public class ArmCommand extends CommandBase {
     public void initialize() {
         switch (m_armPosition) {
             case ARM_COLLAPSED_INTO_ROBOT:
-                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
+//                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_IN());
                 break;
 
             case ARM_COLLECT:
-                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
+//                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_COLLECT());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_OUT());
                 break;
 
             case ARM_CLEAR_BARRIER:
-                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
+//                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_CLEAR_BARRIER());
                 break;
 
             case ARM_SCORE_SPECIMEN:
-                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
+//                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_SCORE_SPECIMEN());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_IN());
                 break;
@@ -96,21 +96,24 @@ public class ArmCommand extends CommandBase {
                 m_armSubsystem.setLeftArmPower(m_operator);
                 break;
 
-            case RIGHT_BUMPER_PRESSED:
+            case LEFT_BUMPER_PRESSED:
                 // While bumper is held and the lift is above the collapsed position
-                while(m_operator.leftBumper().get() && m_armSubsystem.liftPosition() < m_armSubsystem.getLIFT_HIGH_BASKET()) {
+                while(m_operator.leftBumper().get()) {
                     m_armSubsystem.moveLiftUp();
                 }
                 m_armSubsystem.stopLift();
+
                 break;
 
-            case LEFT_BUMPER_PRESSED:
+            case RIGHT_BUMPER_PRESSED:
                 // While bumper is held and the lift is below the max scoring position
-                while(m_operator.rightBumper().get() && m_armSubsystem.liftPosition() > m_armSubsystem.getLIFT_COLLAPSED()) {
+                while(m_operator.rightBumper().get()) {            // && m_armSubsystem.liftPosition() > m_armSubsystem.getLIFT_COLLAPSED()
                     m_armSubsystem.moveLiftDown();
                 }
                 m_armSubsystem.stopLift();
                 break;
+
+
 
         }
 

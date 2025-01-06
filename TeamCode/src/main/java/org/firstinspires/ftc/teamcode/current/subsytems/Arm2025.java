@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.current.subsytems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -8,6 +10,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -39,7 +42,10 @@ public class Arm2025 extends SubsystemBase {
         // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
         public static double LIFT_COLLAPSED = 0;
-        public static double LIFT_HIGH_BASKET = 500; // TODO placeholder value, change soon
+        public static double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
+        public static double LIFT_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
+
+
     }
     private final Servo wrist;
     private final DcMotor armMotor;
@@ -67,6 +73,7 @@ public class Arm2025 extends SubsystemBase {
         armMotor = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(CRServo.class, "intake");
         liftMotor = hardwareMap.get(DcMotor.class, "lift");
+
     }
 
     public double getARM_TICKS_PER_DEGREE() {
@@ -145,11 +152,27 @@ public class Arm2025 extends SubsystemBase {
     }
 
     public void setLiftPosition(double liftPosition) {
-        liftMotor.setTargetPosition((int) (liftPosition));
+//        liftMotor.setTargetPosition((int) (liftPosition));
+//
+//        ((DcMotorEx) liftMotor).setVelocity(2100);
+//        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        ((DcMotorEx) liftMotor).setVelocity(2100);
+        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        if (liftPosition > getLIFT_HIGH_BASKET()){
+            liftPosition = getLIFT_HIGH_BASKET();
+        }
+        //same as above, we see if the lift is trying to go below 0, and if it is, we set it to 0.
+        if (liftPosition < 0){
+            liftPosition = 0;
+        }
+
+
     }
+
 
     public double liftPosition() {
         return liftMotor.getCurrentPosition();
@@ -157,19 +180,30 @@ public class Arm2025 extends SubsystemBase {
 
     public void moveLiftDown() {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setPower(-0.2);
+        liftMotor.setPower(-0.6);
 
     }
 
     public void moveLiftUp() {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setPower(0.2);
+        liftMotor.setPower(0.6);
     }
 
 
     public void stopLift() {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setPower(0);
+    }
+
+    @Override
+    public void periodic() {
+        double motorPosition = liftMotor.getCurrentPosition();
+        double armPosition = armMotor.getCurrentPosition();
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("lift position: ", motorPosition);
+        packet.put("arm position: ", armPosition);
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
 
 }
