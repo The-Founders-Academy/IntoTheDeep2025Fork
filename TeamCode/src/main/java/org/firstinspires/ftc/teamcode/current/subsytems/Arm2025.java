@@ -37,8 +37,8 @@ public class Arm2025 extends SubsystemBase {
         public static double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
         /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-        public static double WRIST_FOLDED_IN = 0.52; //Previous: 0.82
-        public static double WRIST_FOLDED_OUT = 0.19; // Previous: 0.5
+        public static double WRIST_FOLDED_IN = 0.34; //Previous: 0.82
+        public static double WRIST_FOLDED_OUT = 0.01; // Previous: 0.5
         // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
         public static double LIFT_COLLAPSED = 0;
