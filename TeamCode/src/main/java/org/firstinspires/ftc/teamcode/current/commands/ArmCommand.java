@@ -65,6 +65,7 @@ public class ArmCommand extends CommandBase {
             case ARM_CLEAR_BARRIER:
 //                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_COLLAPSED());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_CLEAR_BARRIER());
+                m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_OUT());
                 break;
 
             case ARM_SCORE_SPECIMEN:
@@ -75,7 +76,6 @@ public class ArmCommand extends CommandBase {
 
             case ARM_SCORE_SAMPLE_IN_LOW:
                 // TODO when working rename to ARM_SCORE_SAMPLE_IN_HIGH
-                m_armSubsystem.setLiftPosition(m_armSubsystem.getLIFT_HIGH_BASKET());
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_SCORE_SAMPLE_IN_LOW());
                 m_armSubsystem.setWristPosition(m_armSubsystem.getWRIST_FOLDED_OUT());
                 break;

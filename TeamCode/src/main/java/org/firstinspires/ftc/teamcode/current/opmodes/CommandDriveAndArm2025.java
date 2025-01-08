@@ -54,9 +54,10 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
         m_operator.buttonB().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_CLEAR_BARRIER));
         m_operator.buttonX().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW));
 
-        m_operator.dpadLeft().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN));
+        m_operator.dpadLeft().whenPressed((new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT)));
+        m_operator.dpadRight().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT));
+
         m_operator.dpadUp().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN));
-        m_operator.dpadRight().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_WINCH_ROBOT));
         m_operator.dpadDown().whenPressed(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT));
 
 //        m_operator.leftBumper().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT));

@@ -29,10 +29,10 @@ public class Arm2025 extends SubsystemBase {
 
 
         public static double ARM_COLLAPSED_INTO_ROBOT = 0;
-        public static double ARM_COLLECT = 239.5 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_COLLECT = 229.85 * ARM_TICKS_PER_DEGREE;
         public static double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;    // was 230
         public static double ARM_SCORE_SPECIMEN = 149 * ARM_TICKS_PER_DEGREE;       // was 148
-        public static double ARM_SCORE_SAMPLE_IN_LOW = 140 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_SCORE_SAMPLE_IN_LOW = 126.35 * ARM_TICKS_PER_DEGREE;
         public static double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
         public static double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 

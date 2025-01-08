@@ -27,11 +27,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
     @Config
     public static class Mecanum2025PARAMS {
 
-        public static double TranslationP = 0.035;
-        public static double TranslationI = 0.0175;
+        public static double TranslationP = 0.035; // was 0.035
+        public static double TranslationI = 0.0175; // was 0.0175
         public static double TranslationD = 0;
-        public static double RotationP = 3;
-        public static double RotationI = 0.0175;
+        public static double RotationP = 3; // was 3
+        public static double RotationI = 0.0175; // was 0.0175
         public static double RotationD = 0;
 
     }
