@@ -26,13 +26,14 @@ public class Arm2025 extends SubsystemBase {
                         * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
                         * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
                         * 1 / 360.0; // we want ticks per degree, not per rotation
+                        // = 19.7924
 
 
         public static double ARM_COLLAPSED_INTO_ROBOT = 0;
-        public static double ARM_COLLECT = 229.85 * ARM_TICKS_PER_DEGREE;
-        public static double ARM_CLEAR_BARRIER = 220 * ARM_TICKS_PER_DEGREE;    // was 230
+        public static double ARM_COLLECT = 231.907 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_CLEAR_BARRIER = 216.2446191467432 * ARM_TICKS_PER_DEGREE;    // was 230
         public static double ARM_SCORE_SPECIMEN = 149 * ARM_TICKS_PER_DEGREE;       // was 148
-        public static double ARM_SCORE_SAMPLE_IN_LOW = 126.35 * ARM_TICKS_PER_DEGREE;
+        public static double ARM_SCORE_SAMPLE_IN_LOW = 121.258664942099 * ARM_TICKS_PER_DEGREE; // was 126.35
         public static double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
         public static double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
