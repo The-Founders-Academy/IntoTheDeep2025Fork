@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.current.testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,45 +11,31 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @TeleOp
 public class LiftMotorTest extends LinearOpMode {
 
-    @Config
-    public static class TestParams {
-        public static double LIFT_SCORING_IN_HIGH_BASKET = 0.1;
-    }
-
-    public DcMotorEx liftMotor = null; // The lift motor
-
-    final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;    // 3.204498269896194
-
-    final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
-    final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
-    double liftPosition = LIFT_COLLAPSED;
-
+    MotorEx liftMotor;
     @Override
-    public void runOpMode() {
-        liftMotor = hardwareMap.get(DcMotorEx.class, "lift");
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void runOpMode() throws InterruptedException {
+        liftMotor = hardwareMap.get(MotorEx.class, "lift");
+        liftMotor.setRunMode(Motor.RunMode.PositionControl);
+
+        liftMotor.setPositionCoefficient(0.05);
+        double Kp = liftMotor.getPositionCoefficient();
+        liftMotor.set(0); // sets speed to zero
+
+        liftMotor.setTargetPosition(1500);  // in ticks, figure out inpertick
+        liftMotor.setPositionTolerance(15); // hopefully in ticks and not cm
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            if (gamepad1.right_bumper) {
-                liftMotor.setTargetPosition((int) (10));
-
-                ((DcMotorEx) liftMotor).setVelocity(2100);
-                liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            } else if (gamepad1.left_bumper) {
-                liftMotor.setTargetPosition((int) (0));
-
-                ((DcMotorEx) liftMotor).setVelocity(2100);
-                liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(opModeIsActive()) {
+            if(gamepad1.a) {
+                while (!liftMotor.atTargetPosition()) {
+                    liftMotor.set(0.75); // sets speed
+                }
+                liftMotor.stopMotor();
             }
-
-
-            telemetry.addData("Lift Current Position", liftMotor.getCurrentPosition());
-            telemetry.addData("Lift Target Position", liftMotor.getTargetPosition());
-            telemetry.update();
         }
+
+
+
     }
 }
