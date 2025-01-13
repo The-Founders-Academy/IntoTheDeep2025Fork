@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 public class LiftMotorTest extends OpMode {
-    int targetPosition = 1240;
+    int targetPosition = 1229;
     double Kp = 0.02;
     DcMotor liftMotor;
 
