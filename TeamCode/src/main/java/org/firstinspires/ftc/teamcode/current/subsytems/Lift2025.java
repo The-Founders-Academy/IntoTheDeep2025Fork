@@ -1,36 +1,35 @@
-package org.firstinspires.ftc.teamcode.current.testing;
+package org.firstinspires.ftc.teamcode.current.subsytems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+public class Lift2025 extends SubsystemBase {
+    public DcMotor liftMotor;
 
 
-@TeleOp
-public class LiftMotorTest extends OpMode {
-    int targetPosition = 1240;
-    double Kp = 0.02;
-    DcMotor liftMotor;
+    @Config
+    public static class Lift2025Params {
+        public static int LIFT_MAX = 1241;
+        public static int LIFT_COLLAPSED = 0;
 
-    @Override
-    public void init() {
-        liftMotor = hardwareMap.get(DcMotor.class, "lift");
+        public static double Kp = 0.02;
+    }
+
+    public Lift2025(final HardwareMap hardwaremap) {
+        liftMotor = hardwaremap.get(DcMotor.class, "lift");
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // resets encoder
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    @Override
-    public void loop() {
+    public void moveLift(int targetPosition) {
         liftMotor.setTargetPosition(targetPosition);
-        double power = Kp * (liftMotor.getTargetPosition() - liftMotor.getCurrentPosition());
+        double power = Lift2025Params.Kp * (liftMotor.getTargetPosition() - liftMotor.getCurrentPosition());
         liftMotor.setPower(-power);
 
 
@@ -38,8 +37,7 @@ public class LiftMotorTest extends OpMode {
         packet.put("Current Motor Position: ", liftMotor.getCurrentPosition());
         packet.put("Power: ", power);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
-
     }
+
+
 }
-
-

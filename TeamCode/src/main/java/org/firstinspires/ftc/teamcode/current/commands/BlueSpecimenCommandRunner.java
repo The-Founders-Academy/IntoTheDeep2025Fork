@@ -54,14 +54,14 @@ public class BlueSpecimenCommandRunner extends SequentialCommandGroup {
                 // Pushes second specimen into HP zone
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-98, 20, Rotation2d.fromDegrees(270))).withTimeout(500),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-125, 20, Rotation2d.fromDegrees(270))).withTimeout(800),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-125, 140, Rotation2d.fromDegrees(270))).withTimeout(1000), // was 1250
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-125, 157, Rotation2d.fromDegrees(270))).withTimeout(1000), // was 1250
 //                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 100, Rotation2d.fromDegrees(270))).withTimeout(500),
 
                 // Pushes Third Specimen into HP Zone
                 new DriveToPosition(m_mecanumDrive, new Pose2d(500, 100, Rotation2d.fromDegrees(270))).withTimeout(170) ,
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-140, 20, Rotation2d.fromDegrees(270))).withTimeout(1000),
                 new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 20, Rotation2d.fromDegrees(270))).withTimeout(900),
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 140, Rotation2d.fromDegrees(270))).withTimeout(1000),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-152, 158, Rotation2d.fromDegrees(270))).withTimeout(1000),
 //                new DriveToPosition(m_mecanumDrive, new Pose2d(-155, 140, Rotation2d.fromDegrees(270))).withTimeout(3000),
 
                 // Pushes Fourth Specimen into HP Zone
@@ -82,7 +82,7 @@ public class BlueSpecimenCommandRunner extends SequentialCommandGroup {
                 ),
 
                 // Actually collects second specimen
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 114, Rotation2d.fromDegrees(270))).withTimeout(1800),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 128, Rotation2d.fromDegrees(270))).withTimeout(1800),
 
                 // Moves and rotates next to bar
                 //new ParallelCommandGroup(
@@ -113,7 +113,7 @@ public class BlueSpecimenCommandRunner extends SequentialCommandGroup {
 
                 // Actually collects third specimen
                 new ParallelCommandGroup(
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 122, Rotation2d.fromDegrees(270))).withTimeout(2100)
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-133, 128, Rotation2d.fromDegrees(270))).withTimeout(2100)
                 ),
 
 

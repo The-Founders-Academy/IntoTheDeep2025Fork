@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
+import org.firstinspires.ftc.teamcode.current.subsytems.Lift2025;
 import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
 
 
@@ -28,19 +29,29 @@ public class ArmCommand extends CommandBase {
     }
 
     private Arm2025 m_armSubsystem;
+    private Lift2025 m_liftSubsystem;
     private ArmPosition m_armPosition;
+
     private CommandGamepad m_operator;
 
-    public ArmCommand(Arm2025 armSubsystem, ArmPosition armPosition) {
+    public ArmCommand(Arm2025 armSubsystem, Lift2025 liftSubsystem, ArmPosition armPosition) {
         m_armPosition = armPosition;
         m_armSubsystem = armSubsystem;
-
+        m_liftSubsystem = liftSubsystem;
         addRequirements(m_armSubsystem);
         // TODO See if the line above is actually needed
 
     }
 
-    public ArmCommand(Arm2025 armSubsystem, ArmPosition armPosition, CommandGamepad operator) {
+    public ArmCommand(Arm2025 armSubsystem, ArmPosition armPosition) {
+        m_armPosition = armPosition;
+        m_armSubsystem = armSubsystem;
+        addRequirements(m_armSubsystem);
+        // TODO See if the line above is actually needed
+
+    }
+
+    public ArmCommand(Arm2025 armSubsystem, Lift2025 liftSubsystem, ArmPosition armPosition, CommandGamepad operator) {
         m_armPosition = armPosition;
         m_armSubsystem = armSubsystem;
         m_operator = operator;
@@ -93,16 +104,11 @@ public class ArmCommand extends CommandBase {
                 break;
 
             case RIGHT_TRIGGER_PRESSED:
-                m_armSubsystem.setLeftArmPower(m_operator);
+                m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_COLLAPSED);
                 break;
 
             case LEFT_BUMPER_PRESSED:
-                // While bumper is held and the lift is above the collapsed position
-                while(m_operator.leftBumper().get()) {
-                    m_armSubsystem.moveLiftUp();
-                }
-                m_armSubsystem.stopLift();
-
+                m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_MAX);
                 break;
 
             case RIGHT_BUMPER_PRESSED:
@@ -110,7 +116,7 @@ public class ArmCommand extends CommandBase {
                 while(m_operator.rightBumper().get()) {            // && m_armSubsystem.liftPosition() > m_armSubsystem.getLIFT_COLLAPSED()
                     m_armSubsystem.moveLiftDown();
                 }
-                m_armSubsystem.stopLift();
+                m_armSubsystem.stopLiftRight();
                 break;
 
 

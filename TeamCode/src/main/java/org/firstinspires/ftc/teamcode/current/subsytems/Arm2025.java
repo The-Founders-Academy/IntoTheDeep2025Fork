@@ -191,7 +191,12 @@ public class Arm2025 extends SubsystemBase {
     }
 
 
-    public void stopLift() {
+    public void stopLiftLeft() {
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setPower(0.1);
+    }
+
+    public void stopLiftRight() {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setPower(0);
     }

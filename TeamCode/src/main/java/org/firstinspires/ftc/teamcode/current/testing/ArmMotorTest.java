@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.current.testing;
 
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import com.qualcomm.robotcore.hardware.CRServo;
@@ -14,6 +15,8 @@ public class ArmMotorTest extends LinearOpMode {
     public DcMotor armMotor = null; //the arm motor
 //    public CRServo intake = null; //the active intake servo
     public Servo wrist = null; //the wrist servo
+
+    public DcMotor lift = null;
 
     final double ARM_TICKS_PER_DEGREE =
             28 // number of encoder ticks per rotation of the bare motor
@@ -53,6 +56,7 @@ public class ArmMotorTest extends LinearOpMode {
         armMotor   = hardwareMap.get(DcMotor.class, "arm"); //the arm motor
 //        intake = hardwareMap.get(CRServo.class, "intake");      // intake servo, continuous
         wrist  = hardwareMap.get(Servo.class, "wrist");         // wrist servo, not continuous
+        lift = hardwareMap.get(DcMotor.class, "lift");
 
         /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
         ((DcMotorEx) armMotor).setCurrentAlert(5, CurrentUnit.AMPS);
@@ -171,6 +175,7 @@ public class ArmMotorTest extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.addData("Lift Position: ", lift.getCurrentPosition());
             telemetry.update();
         }
     }
