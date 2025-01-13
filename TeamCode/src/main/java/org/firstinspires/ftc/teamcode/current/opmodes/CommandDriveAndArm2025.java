@@ -62,19 +62,13 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
 
         m_operator.dpadUp().whenPressed(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN));
         m_operator.dpadDown().whenPressed(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT));
-
-//        m_operator.leftBumper().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT));
-//        m_operator.rightBumper().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT));
         m_operator.buttonY().whenPressed(new IntakeCommand(armSubsystem, IntakeCommand.IntakeSetting.INTAKE_OFF));
-
 
         m_operator.leftBumper().whenPressed(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED, m_operator));
         m_operator.rightBumper().whenPressed(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED, m_operator));
-//        new Trigger(() -> m_driver.leftTrigger() > 0.25).whenActive(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.LEFT_TRIGGER_PRESSED));
-//        new Trigger(() -> m_driver.rightTrigger() > 0.25).whenActive(new ArmCommand(armSubsystem, ArmCommand.ArmPosition.RIGHT_TRIGGER_PRESSED));
-        // buttons created in CommandGamepad class
-        m_operator.getrightTriggerActive().whileActiveContinuous(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.LEFT_TRIGGER_PRESSED, m_operator));
-        m_operator.getrightTriggerActive().whileActiveContinuous(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.RIGHT_TRIGGER_PRESSED, m_operator));
+
+//        m_operator.getrightTriggerActive().whileActiveContinuous(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.LEFT_TRIGGER_PRESSED, m_operator));
+//        m_operator.getrightTriggerActive().whileActiveContinuous(new ArmCommand(armSubsystem, liftSubsystem, ArmCommand.ArmPosition.RIGHT_TRIGGER_PRESSED, m_operator));
 
 
     }

@@ -54,6 +54,7 @@ public class ArmCommand extends CommandBase {
     public ArmCommand(Arm2025 armSubsystem, Lift2025 liftSubsystem, ArmPosition armPosition, CommandGamepad operator) {
         m_armPosition = armPosition;
         m_armSubsystem = armSubsystem;
+        m_liftSubsystem = liftSubsystem;
         m_operator = operator;
 
         addRequirements(m_armSubsystem);
