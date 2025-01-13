@@ -53,6 +53,7 @@ public class ArmCommand extends CommandBase {
 
     public ArmCommand(Arm2025 armSubsystem, Lift2025 liftSubsystem, ArmPosition armPosition, CommandGamepad operator) {
         m_armPosition = armPosition;
+        m_liftSubsystem = liftSubsystem;
         m_armSubsystem = armSubsystem;
         m_operator = operator;
 
@@ -104,7 +105,6 @@ public class ArmCommand extends CommandBase {
                 break;
 
             case RIGHT_TRIGGER_PRESSED:
-                m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_COLLAPSED);
                 break;
 
             case LEFT_BUMPER_PRESSED:
@@ -112,11 +112,7 @@ public class ArmCommand extends CommandBase {
                 break;
 
             case RIGHT_BUMPER_PRESSED:
-                // While bumper is held and the lift is below the max scoring position
-                while(m_operator.rightBumper().get()) {            // && m_armSubsystem.liftPosition() > m_armSubsystem.getLIFT_COLLAPSED()
-                    m_armSubsystem.moveLiftDown();
-                }
-                m_armSubsystem.stopLiftRight();
+                m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_COLLAPSED);
                 break;
 
 
