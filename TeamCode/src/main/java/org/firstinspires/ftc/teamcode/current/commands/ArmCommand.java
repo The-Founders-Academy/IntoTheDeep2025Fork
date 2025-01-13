@@ -55,6 +55,7 @@ public class ArmCommand extends CommandBase {
         m_armPosition = armPosition;
         m_liftSubsystem = liftSubsystem;
         m_armSubsystem = armSubsystem;
+        m_liftSubsystem = liftSubsystem;
         m_operator = operator;
 
         addRequirements(m_armSubsystem);
