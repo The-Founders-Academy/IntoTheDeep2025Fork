@@ -34,7 +34,7 @@ public class TestLiftSubsystem extends SubsystemBase {
     }
 
     public boolean atTargetExtension() {
-        m_lift.atTargetPosition();
+        return m_lift.atTargetPosition();
     }
 
     @Override
