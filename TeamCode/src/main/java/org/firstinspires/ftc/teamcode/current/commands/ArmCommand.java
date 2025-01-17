@@ -97,17 +97,6 @@ public class ArmCommand extends CommandBase {
                 m_armSubsystem.setArmPosition(m_armSubsystem.getARM_ATTACH_HANGING_HOOK());
                 break;
 
-            case ARM_WINCH_ROBOT:
-                m_armSubsystem.setArmPosition(m_armSubsystem.getARM_WINCH_ROBOT());
-                break;
-
-            case LEFT_TRIGGER_PRESSED:
-                m_armSubsystem.setRightArmPower(m_operator);
-                break;
-
-            case RIGHT_TRIGGER_PRESSED:
-                break;
-
             case LEFT_BUMPER_PRESSED:
                 m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_MAX);
                 break;
@@ -115,8 +104,6 @@ public class ArmCommand extends CommandBase {
             case RIGHT_BUMPER_PRESSED:
                 m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_COLLAPSED);
                 break;
-
-
 
         }
 

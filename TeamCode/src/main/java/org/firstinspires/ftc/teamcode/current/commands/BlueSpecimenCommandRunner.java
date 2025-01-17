@@ -6,14 +6,14 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 
 public class BlueSpecimenCommandRunner extends SequentialCommandGroup {
 
     public Arm2025 m_armSubsystem;
-    public Mecanum2025 m_mecanumDrive;
+    public MecanumDrive m_mecanumDrive;
 
-    public BlueSpecimenCommandRunner(Mecanum2025 mecanum2025, Arm2025 armSubsystem) {
+    public BlueSpecimenCommandRunner(MecanumDrive mecanum2025, Arm2025 armSubsystem) {
 
         m_mecanumDrive = mecanum2025;
         m_armSubsystem = armSubsystem;

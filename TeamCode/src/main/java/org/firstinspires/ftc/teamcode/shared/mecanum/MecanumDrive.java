@@ -1,32 +1,32 @@
-package org.firstinspires.ftc.teamcode.current.subsytems;
+package org.firstinspires.ftc.teamcode.shared.mecanum;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.teamcode.current.util.HolonomicOdometry2025;
-import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
-import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.MathUtil;
 
-public class Mecanum2025 extends BaseMecanumDrive {
+public class MecanumDrive extends SubsystemBase {
+
+    public enum Alliance {
+        RED, BLUE
+    }
 
     @Config
-    public static class Mecanum2025PARAMS {
-
+    public static class BaseMecanumParams {
+        // You can change these values on FTCDashboard
         public static double TranslationP = 0.035; // was 0.035
         public static double TranslationI = 0.0175; // was 0.0175
         public static double TranslationD = 0;
@@ -37,6 +37,14 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
 
+    protected MotorEx m_frontLeft, m_frontRight, m_backLeft, m_backRight;
+    protected MecanumDriveKinematics m_kinematics;
+    protected MecanumConfigs m_mecanumConfigs;
+    protected Alliance m_alliance;
+
+    public MecanumDrive m_mecanumDrive;
+
+    // Mecanum Constants
     public double deadWheelRadiusCentimeters = 2.4;
 
     public double ticksPerRevolution = 2000.0;
@@ -57,18 +65,23 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     private Rotation2d m_referenceRotation = Rotation2d.fromDegrees(0); // Used for heading
 
-    /**
-     * Defines the system to use for DriveToPosition commands, used for driving, and used for tuning PIDs and odometry. Connected with BaseMecanumDrive.
-     *
-     *
-     * @param hardwareMap
-     * @param mecanumConfigs
-     * @param initialPose
-     *
-     */
 
-    public Mecanum2025(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
-        super(hardwareMap, mecanumConfigs, initialPose);
+    public MecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose, Alliance alliance) {
+        m_mecanumConfigs = mecanumConfigs;
+        m_frontLeft = new MotorEx(hardwareMap, m_mecanumConfigs.getFrontLeftName(), Motor.GoBILDA.RPM_312);
+        m_frontRight = new MotorEx(hardwareMap, m_mecanumConfigs.getFrontRightName(), Motor.GoBILDA.RPM_312);
+        m_backLeft = new MotorEx(hardwareMap, m_mecanumConfigs.getBackLeftName(), Motor.GoBILDA.RPM_312);
+        m_backRight = new MotorEx(hardwareMap, m_mecanumConfigs.getBackRightName(), Motor.GoBILDA.RPM_312);
+
+        m_frontLeft.setRunMode(m_mecanumConfigs.getRunMode());
+        m_frontRight.setRunMode(m_mecanumConfigs.getRunMode());
+        m_backLeft.setRunMode(m_mecanumConfigs.getRunMode());
+        m_backRight.setRunMode(m_mecanumConfigs.getRunMode());
+
+        m_kinematics = new MecanumDriveKinematics(m_mecanumConfigs.getFrontLeftPosition(), m_mecanumConfigs.getFrontRightPosition(),
+                m_mecanumConfigs.getBackLeftPosition(), m_mecanumConfigs.getBackRightPosition());
+
+
 
         m_alliance = alliance;
         m_translationYController = new PIDController(0,0,0);
@@ -90,11 +103,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
         }
 
         double cm_per_tick = 2 * Math.PI * deadWheelRadiusCentimeters / ticksPerRevolution;
-        Encoder left = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
+        Motor.Encoder left = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
         left.setDirection(Motor.Direction.REVERSE);
-        Encoder right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
+        Motor.Encoder right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
         right.setDirection(Motor.Direction.REVERSE);
-        Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
+        Motor.Encoder horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
         horizontal.setDirection(Motor.Direction.REVERSE);
 
         m_odo = new HolonomicOdometry2025(
@@ -107,38 +120,25 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
         m_odo.updatePose(initialPose);
+
+
     }
 
-    @Override
     public Pose2d getPose() {
         return m_robotPose;
     }
 
-    /**
-     * This function is never used and will interact poorly with getHeading(), giving weird results.
-     * We will probably just remove it. - Kenny 11/13/2024
-     * @param pose The new robot pose
-     */
-    @Deprecated
-    @Override
-    public void resetPose(Pose2d pose) {
-        m_robotPose = pose;
-    }
-
-    @Override
     public Rotation2d getHeading() {
         return m_robotPose.getRotation().minus(m_referenceRotation);
     }
 
-    /**
-     * The robot heading is calculated as (CurrentAngle - ReferenceAngle) where ReferenceAngle
-     * is arbitrary and initialized to zero.
-     */
-    @Override
     public void resetHeading() {
         m_referenceRotation = m_robotPose.getRotation();
     }
 
+    public boolean atTargetPose() {
+        return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
+    }
     public void setTargetPose(Pose2d targetPose) {
         m_targetPose = targetPose;
         m_translationXController.setSetPoint(m_targetPose.getX());
@@ -154,10 +154,6 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_rotationController.setSetPoint(targetRotation);
     }
 
-    public boolean atTargetPose() {
-        return (m_translationXController.atSetPoint() && m_translationYController.atSetPoint() && m_rotationController.atSetPoint());
-    }
-
     public void resetPIDS() {
         m_translationXController.reset();
         m_translationYController.reset();
@@ -165,14 +161,23 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
     public void tunePIDS() {
-        m_translationXController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
-        m_translationYController.setPID(Mecanum2025PARAMS.TranslationP, Mecanum2025PARAMS.TranslationI, Mecanum2025PARAMS.TranslationD);
-        m_rotationController.setPID(Mecanum2025PARAMS.RotationP, Mecanum2025PARAMS.RotationI, Mecanum2025PARAMS.RotationD);
+        m_translationXController.setPID(BaseMecanumParams.TranslationP, BaseMecanumParams.TranslationI, BaseMecanumParams.TranslationD);
+        m_translationYController.setPID(BaseMecanumParams.TranslationP, BaseMecanumParams.TranslationI, BaseMecanumParams.TranslationD);
+        m_rotationController.setPID(BaseMecanumParams.RotationP, BaseMecanumParams.RotationI, BaseMecanumParams.RotationD);
 
         m_translationXController.setTolerance(TranslationToleranceCentimeters);
         m_translationYController.setTolerance(TranslationToleranceCentimeters);
         m_rotationController.setTolerance(RotationToleranceRad);
     }
+
+    protected void move(ChassisSpeeds speeds) {
+        MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
+        m_frontLeft.setVelocity(wheelSpeeds.frontLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_frontRight.setVelocity(wheelSpeeds.frontRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_backLeft.setVelocity(wheelSpeeds.rearLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_backRight.setVelocity(wheelSpeeds.rearRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+    }
+
 
 
     /**
@@ -219,6 +224,60 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     }
 
+
+
+
+    /**
+     * @param xPercentVelocity The forward velocity. Ranges from -1 to 1.
+     * @param yPercentVelocity The leftward (from the driverstation) velocity. Ranges from -1 to 1.
+     * @param omegaPercentVelocity The rotational velocity. Positive indicates cc rotation. Ranges from -1 to 1.
+     */
+    public void moveRobotRelative(double xPercentVelocity, double yPercentVelocity, double omegaPercentVelocity) {
+        double vXMps = xPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
+        double vYMps = yPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
+        double omegaRps = omegaPercentVelocity * m_mecanumConfigs.getMaxRobotRotationRps();
+        ChassisSpeeds speeds = new ChassisSpeeds(vXMps, vYMps, omegaRps);
+        move(speeds);
+    }
+
+
+    public Translation2d fieldRelativeToAllianceRelative(Translation2d translation) {
+        Translation2d transformedTranslation;
+        if(m_alliance == Alliance.RED) {
+            transformedTranslation = new Translation2d(translation.getY(), -translation.getX());
+        } else {
+            transformedTranslation = new Translation2d(-translation.getY(), translation.getX());
+        }
+        return transformedTranslation;
+    }
+
+
+
+    /**
+     * @param xPercentVelocity The forward velocity. Ranges from -1 to 1.
+     * @param yPercentVelocity The leftward (from the driverstation) velocity. Ranges from -1 to 1.
+     * @param omegaPercentVelocity The rotational velocity. Positive indicates cc rotation. Ranges from -1 to 1.
+     *
+     *  Pass in left joystick y, negative joystick x, and negative right joystick x
+     */
+    public void moveAllianceRelative(double xPercentVelocity, double yPercentVelocity, double omegaPercentVelocity) {
+        double vXMps = xPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
+        double vYMps = yPercentVelocity * m_mecanumConfigs.getMaxRobotSpeedMps();
+        double omegaRps = omegaPercentVelocity * m_mecanumConfigs.getMaxRobotRotationRps();
+        ChassisSpeeds speeds;
+
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vXMps, vYMps, omegaRps, getHeading());
+
+        TelemetryPacket heading = new TelemetryPacket();
+        heading.put("heading", getHeading());
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+
+        dashboard.sendTelemetryPacket(heading);
+
+        move(speeds);
+    }
+
     public void stop() {
         m_frontLeft.stopMotor();
         m_frontRight.stopMotor();
@@ -227,71 +286,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
     }
 
 
-    // Run periodically, independent of other move functions, to generate Pose data. m_robotPose is used in FieldRelativeDrive in BaseMecanumDrive.
-    @Override
+    // Run at 50hz, independent of other move functions, to generate Pose data from odo pods. m_robotPose is used in MoveFieldRelativeDrive.
     public void periodic() {
         tunePIDS();
         m_odo.updatePose();
         m_robotPose = m_odo.getPose();
-
-        TelemetryPacket firstTestDebuggingInfo = new TelemetryPacket();
-
-        /*
-        TODO Test #1 (record results):
-            1) Initiate a teleopmode with the initial pose at (0x, 0y, 0deg) (alliance does not matter)
-            2) Instead of using the controller, physically move the robot forward while observing how its x coordinate changes
-            3) Do the same thing for the y component
-            4) Rotate the robot counterclockwise and observe how all three components change. Only the angle-related quantities should.
-            5) Repeat with the initial pose at (0, 0, 90deg), (1,1,0deg), (1,1,90deg)
-            You should expect the following results for each initial condition:
-            (0, 0, 0deg): Pushing the robot forward while it is at 0deg increases only the x coordinate, while pushing it to the left only increases the y coordinate
-            (0, 0, 90deg): Pushing the robot forward while it is at 90deg increases only the y coordinate, while pushing it to the left decreases the x coordinate
-            You should expect exactly the same results for the (1,1) tests with corresponding angles.
-         */
-        firstTestDebuggingInfo.put("Recorded x", m_odo.getPose().getX());
-        firstTestDebuggingInfo.put("Recorded y", m_odo.getPose().getY());
-        firstTestDebuggingInfo.put("Recorded theta (abs coord)", m_odo.getPose().getRotation().getDegrees());
-
-        // Comment me out when you're done with the first test
-        FtcDashboard.getInstance().sendTelemetryPacket(firstTestDebuggingInfo);
-
-        TelemetryPacket secondTestDebuggingInfo = new TelemetryPacket();
-
-
-        /*
-        TODO Test #2 (record results):
-            In this test you will simply check that the alliance-relative heading works as expected
-            1) Initiate a teleopmode with the intial pose at (0, 0, 90) and on the red alliance
-            2) Check that "Recorded heading" is 0 degrees and check that when pushing the robot ccw, it increases heading
-            3) Initiate the same teleopmode with the initial pose (0, 0, -90) and on the blue alliance
-            4) Do the same checks
-            5) If the above worked, try using the controller to drive the robot in both orientations and try to use resetHeading() and see if everything still works
-         */
-        secondTestDebuggingInfo.put("Recorded x", m_odo .getPose().getX());
-        secondTestDebuggingInfo.put("Recorded y", m_odo .getPose().getX());
-        secondTestDebuggingInfo.put("Recorded theta (abs coord)", m_odo .getPose().getX());
-        secondTestDebuggingInfo.put("Recorded heading (alliance relative coordinates)", m_odo .getPose().getX());
-
-        // FtcDashboard.getInstance().sendTelemetryPacket(secondTestDebuggingInfo);
-
-
-        TelemetryPacket thirdTestDebuggingInfo = new TelemetryPacket();
-
-        /**
-         * TODO Test #3 (record results):
-         *  This is the final test and will confirm whether auto works
-         *  1) Run your normal auto tests, record videos and graphs
-         *  2) If it works, then we're done worrying about this forever :)
-         */
-        thirdTestDebuggingInfo.put("Recorded x", m_odo .getPose().getX());
-        thirdTestDebuggingInfo.put("Recorded y", m_odo .getPose().getX());
-        thirdTestDebuggingInfo.put("Recorded theta", m_odo .getPose().getX());
-        thirdTestDebuggingInfo.put("Target x", m_translationXController.getSetPoint());
-        thirdTestDebuggingInfo.put("Target y", m_translationYController.getSetPoint());
-        thirdTestDebuggingInfo.put("Target theta", m_rotationController.getSetPoint());
-
-        // FtcDashboard.getInstance().sendTelemetryPacket(thirdTestDebuggingInfo);
-
 
     }
 

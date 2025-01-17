@@ -15,8 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
-import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 
 @TeleOp()
@@ -24,7 +23,7 @@ import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 public class RobotRelativeDrive2025 extends LinearOpMode {
 
 
-    public Mecanum2025 m_mecanumDrive;
+    public MecanumDrive m_mecanumDrive;
     public Arm2025 m_armSubsystem;
 
     public MotorEx m_frontLeft, m_frontRight, m_backLeft, m_backRight;
@@ -59,7 +58,7 @@ public class RobotRelativeDrive2025 extends LinearOpMode {
 
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
-        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), BaseMecanumDrive.Alliance.RED);
+        m_mecanumDrive = new MecanumDrive(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), MecanumDrive.Alliance.RED);
         m_armSubsystem = new Arm2025(hardwareMap);
 
         double armPosition = (int) m_armSubsystem.getARM_COLLAPSED_INTO_ROBOT();

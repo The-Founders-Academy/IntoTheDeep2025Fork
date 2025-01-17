@@ -4,14 +4,14 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
 
 public class DriverRelativeDrive extends CommandBase {
-    private Mecanum2025 m_mecanum;
+    private MecanumDrive m_mecanum;
     private CommandGamepad m_driver;
 
-    public DriverRelativeDrive(Mecanum2025 mecanum, CommandGamepad driver) {
+    public DriverRelativeDrive(MecanumDrive mecanum, CommandGamepad driver) {
         m_mecanum = mecanum;
         m_driver = driver;
         addRequirements(m_mecanum, m_driver);

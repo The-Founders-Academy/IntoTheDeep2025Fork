@@ -1,36 +1,25 @@
 package org.firstinspires.ftc.teamcode.current.opmodes;
 
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.Subsystem;
-import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.current.commands.ArmCommand;
 import org.firstinspires.ftc.teamcode.current.commands.DriverRelativeDrive;
 import org.firstinspires.ftc.teamcode.current.commands.IntakeCommand;
-import org.firstinspires.ftc.teamcode.current.commands.WristCommand;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Lift2025;
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
-import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.CommandGamepad;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp()
 public class CommandDriveAndArm2025 extends CommandOpMode {
 
-    private Mecanum2025 m_mecanumDrive;
+    private MecanumDrive m_mecanumDrive;
     private CommandGamepad m_driver;
     private CommandGamepad m_operator;
     private Arm2025 armSubsystem;
@@ -40,7 +29,7 @@ public class CommandDriveAndArm2025 extends CommandOpMode {
 
         MecanumConfigs configs = new MecanumConfigs().runMode(MotorEx.RunMode.RawPower);
 
-        m_mecanumDrive = new Mecanum2025(hardwareMap, configs, new Pose2d(42.38, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
+        m_mecanumDrive = new MecanumDrive(hardwareMap, configs, new Pose2d(42.38, 161, Rotation2d.fromDegrees(270)), MecanumDrive.Alliance.BLUE);
         armSubsystem = new Arm2025(hardwareMap);
         liftSubsystem = new Lift2025(hardwareMap);
 

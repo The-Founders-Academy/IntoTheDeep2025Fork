@@ -7,15 +7,15 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Lift2025;
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 
 public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
-    private Mecanum2025 m_mecanumDrive;
+    private MecanumDrive m_mecanumDrive;
     private Arm2025 m_armSubsystem;
     private Lift2025 m_liftSubsystem;
 
-    public BlueSampleCommandRunner(Mecanum2025 mecanum2025, Arm2025 armSubsystem, Lift2025 liftSubsystem) {
+    public BlueSampleCommandRunner(MecanumDrive mecanum2025, Arm2025 armSubsystem, Lift2025 liftSubsystem) {
         m_mecanumDrive = mecanum2025;
         m_armSubsystem = armSubsystem;
         m_liftSubsystem = liftSubsystem;
@@ -110,8 +110,7 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
                 new DriveToPosition(m_mecanumDrive, new Pose2d(90, 29.7, Rotation2d.fromDegrees(0))).withTimeout(1500),  // moves close to bar
                 new DriveToPosition(m_mecanumDrive, new Pose2d(45, 29.7, Rotation2d.fromDegrees(4))).withTimeout(2250)  // rotates to face bar
-
-
+                
         );
     }
 

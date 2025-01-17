@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode.current.commands;
 
 
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 
+
+/**   This is very similar to the DriveToPosition command, however it lets you manually set the velocity yourself instead
+ *    of it manually changing. Can be useful in certain niche circumstances
+ **/
 public class MoveToPosition extends CommandBase {
-    private Mecanum2025 m_mecanumDrive;
+    private MecanumDrive m_mecanumDrive;
     private Pose2d m_targetPose;
 
-    public MoveToPosition(Mecanum2025 mecanumDrive, Pose2d targetPose) {
+    public MoveToPosition(MecanumDrive mecanumDrive, Pose2d targetPose) {
         m_mecanumDrive = mecanumDrive;
         m_targetPose = targetPose;
 

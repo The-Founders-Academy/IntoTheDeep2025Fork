@@ -9,22 +9,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.current.commands.BlueSpecimenCommandRunner;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
-import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
-import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
+import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 
 
 @Autonomous
 public class BlueSpecimenAuto extends CommandOpMode {
 
-    private Mecanum2025 m_mecanumDrive;
+    private MecanumDrive m_mecanumDrive;
     private Arm2025 m_armSubsystem;
 
     @Override
     public void initialize() {
         MecanumConfigs mecanumConfigs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
         // Pose is set to Blue alliance, closer to blue samples. Control click https://screamingeagles2025.netlify.app/ to see exactly where it's positioned
-        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(-42.38, 163, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
+        m_mecanumDrive = new MecanumDrive(hardwareMap, mecanumConfigs, new Pose2d(-42.38, 163, Rotation2d.fromDegrees(270)), MecanumDrive.Alliance.BLUE);
         m_armSubsystem = new Arm2025(hardwareMap);
 
 
