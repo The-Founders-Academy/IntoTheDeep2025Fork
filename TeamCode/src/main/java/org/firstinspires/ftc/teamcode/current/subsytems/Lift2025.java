@@ -14,9 +14,10 @@ public class Lift2025 extends SubsystemBase {
 
     @Config
     public static class Lift2025Params {
-        public static int LIFT_MAX = 400;
-        public static int LIFT_COLLAPSED = 0;
+        public static int LIFT_MAX = 1220;
+        public static int LIFT_COLLAPSED = 5;
         public static double Kp = 0.02;
+
     }
 
     public Lift2025(final HardwareMap hardwaremap) {
@@ -32,13 +33,13 @@ public class Lift2025 extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double power = Lift2025Params.Kp * (liftMotor.getTargetPosition() - liftMotor.getCurrentPosition());
+        double power = (Lift2025Params.Kp * (liftMotor.getTargetPosition() - liftMotor.getCurrentPosition()));
         liftMotor.setPower(-power);
 
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Current Motor Position: ", liftMotor.getCurrentPosition());
-        packet.put("Power: ", power);
+        packet.put("power", power);
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
 

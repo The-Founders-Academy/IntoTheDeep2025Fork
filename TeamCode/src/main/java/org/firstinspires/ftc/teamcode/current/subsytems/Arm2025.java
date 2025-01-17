@@ -58,7 +58,7 @@ public class Arm2025 extends SubsystemBase {
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT = -1.0;
     final double INTAKE_OFF = 0.0;
-    final double INTAKE_DEPOSIT = 0.5;
+    final double INTAKE_DEPOSIT = 0.6; // was 0.5
 
 
 
