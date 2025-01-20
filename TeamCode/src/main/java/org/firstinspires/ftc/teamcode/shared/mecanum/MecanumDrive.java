@@ -154,6 +154,10 @@ public class MecanumDrive extends SubsystemBase {
         m_rotationController.setSetPoint(targetRotation);
     }
 
+    public Pose2d getTargetPose() {
+        return m_targetPose;
+    }
+
     public void resetPIDS() {
         m_translationXController.reset();
         m_translationYController.reset();
