@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 
 @TeleOp()
 //@Disabled
-public class RobotRelativeDrive2025 extends LinearOpMode {
+public class RobotRelativeDrive extends LinearOpMode {
 
 
     public MecanumDrive m_mecanumDrive;
