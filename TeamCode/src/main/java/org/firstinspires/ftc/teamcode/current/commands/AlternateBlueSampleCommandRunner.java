@@ -53,15 +53,15 @@ public class AlternateBlueSampleCommandRunner extends SequentialCommandGroup {
 
                 // GOING FOR SECOND SPECIMEN
                 new ParallelCommandGroup(
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(-53, 109, Rotation2d.fromDegrees(-140))).withTimeout(2000) // was 2200  // moves to second sample
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-53, 109, Rotation2d.fromDegrees(50))).withTimeout(2000) // was 2200  // moves to second sample
                 ),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900), // was 1200 // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(-67, 97, Rotation2d.fromDegrees(-142))).withTimeout(2000), // was 2500  // moves to second sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(-67, 97, Rotation2d.fromDegrees(52))).withTimeout(2000), // was 2500  // moves to second sample
 
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(1000), // was 1500
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(-124, 124, Rotation2d.fromDegrees(-215))).withTimeout(2500)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(-124, 124, Rotation2d.fromDegrees(305))).withTimeout(2500)    // moves to basket
                 ),
 
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(800)
