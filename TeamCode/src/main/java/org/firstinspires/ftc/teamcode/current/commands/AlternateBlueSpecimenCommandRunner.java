@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.current.commands;
 
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
@@ -10,13 +9,13 @@ import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Lift2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 
-public class AlternateBlueSampleCommandRunner extends SequentialCommandGroup {
+public class AlternateBlueSpecimenCommandRunner extends SequentialCommandGroup {
 
     private Mecanum2025 m_mecanumDrive;
     private Arm2025 m_armSubsystem;
     private Lift2025 m_liftSubsystem;
 
-    public AlternateBlueSampleCommandRunner(Mecanum2025 mecanum2025, Arm2025 armSubsystem, Lift2025 liftSubsystem) {
+    public AlternateBlueSpecimenCommandRunner(Mecanum2025 mecanum2025, Arm2025 armSubsystem, Lift2025 liftSubsystem) {
         m_mecanumDrive = mecanum2025;
         m_armSubsystem = armSubsystem;
         m_liftSubsystem = liftSubsystem;

@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.current.autos;
 
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
-import org.firstinspires.ftc.teamcode.current.commands.AlternateBlueSampleCommandRunner;
+import org.firstinspires.ftc.teamcode.current.commands.AlternateBlueSpecimenCommandRunner;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Lift2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
@@ -29,6 +28,6 @@ public class AlternateBlueSpecimenAuto extends CommandOpMode {
         m_liftSubsystem = new Lift2025(hardwareMap);
 
 
-        CommandScheduler.getInstance().schedule(  new AlternateBlueSampleCommandRunner(m_mecanumDrive, m_armSubsystem, m_liftSubsystem));
+        CommandScheduler.getInstance().schedule(  new AlternateBlueSpecimenCommandRunner(m_mecanumDrive, m_armSubsystem, m_liftSubsystem));
     }
 }
