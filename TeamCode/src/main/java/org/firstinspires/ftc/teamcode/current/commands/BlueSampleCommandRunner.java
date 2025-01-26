@@ -23,13 +23,13 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
         // Starting Position:
         addCommands(
                 // SCORING PRELOADED SAMPLE
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_CLEAR_BARRIER).withTimeout(1),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1),
 
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(1), // ensure the arm stays put
                 // Hooks preloaded specimen onto bar
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1500),
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2700)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(125, 125, Rotation2d.fromDegrees(215))).withTimeout(2700)    // moves to basket
                 ),
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
 
@@ -51,7 +51,7 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
                 new ParallelCommandGroup(
                     new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
-                    new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
+                    new DriveToPosition(m_mecanumDrive, new Pose2d(122, 122, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
                 ),
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(800),
@@ -72,7 +72,7 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(123, 123, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
                 ),
 
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),

@@ -109,8 +109,11 @@ public class ArmCommand extends CommandBase {
                 break;
 
             case LEFT_BUMPER_PRESSED:
-                m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_MAX);
-                break;
+                // 300-2100
+                if(2100 < m_armSubsystem.getArmPosition() && m_armSubsystem.getArmPosition() < 3000) {
+                    m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_MAX);
+                    break;
+                }
 
             case RIGHT_BUMPER_PRESSED:
                 m_liftSubsystem.moveLift(Lift2025.Lift2025Params.LIFT_COLLAPSED);

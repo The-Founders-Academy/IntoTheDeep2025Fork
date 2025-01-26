@@ -132,6 +132,10 @@ public class Arm2025 extends SubsystemBase {
 
     }
 
+    public double getArmPosition() {
+        return(armMotor.getCurrentPosition());
+    }
+
     public void setLeftArmPower(CommandGamepad operator) {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
