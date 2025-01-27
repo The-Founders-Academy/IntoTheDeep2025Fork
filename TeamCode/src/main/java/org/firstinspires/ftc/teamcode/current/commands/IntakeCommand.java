@@ -28,7 +28,7 @@ public class IntakeCommand extends CommandBase {
   public void initialize() {
         switch (m_intakeSetting) {
             case INTAKE_COLLECT:
-                m_armSubsystem.setIntake(m_armSubsystem.getINTAKE_COLLECT());
+                m_armSubsystem.setIntake(m_armSubsystem.getINTAKE_DEPOSIT());
                 break;
 
             case INTAKE_OFF:
@@ -36,7 +36,7 @@ public class IntakeCommand extends CommandBase {
                 break;
 
             case INTAKE_DEPSOSIT:
-                m_armSubsystem.setIntake(m_armSubsystem.getINTAKE_DEPOSIT());
+                m_armSubsystem.setIntake(m_armSubsystem.getINTAKE_COLLECT());
                 break;
 
         }

@@ -44,7 +44,7 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
                 // SCORING SECOND SECOND SAMPLE
                 new ParallelCommandGroup(
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(53, 109, Rotation2d.fromDegrees(140))).withTimeout(2000) // was 2200  // moves to second sample
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(52, 110, Rotation2d.fromDegrees(140))).withTimeout(2000) // was 2200  // moves to second sample
                 ),
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900), // was 1200 // collects second sample
                 new DriveToPosition(m_mecanumDrive, new Pose2d(67, 97, Rotation2d.fromDegrees(142))).withTimeout(2000), // was 2500  // moves to second sample
@@ -56,7 +56,7 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(800),
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(110, 115, Rotation2d.fromDegrees(215))).withTimeout(200), // was 300
+                new DriveToPosition(m_mecanumDrive, new Pose2d(111, 115, Rotation2d.fromDegrees(215))).withTimeout(200), // was 300
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(700),  // retracts arm
 
 
@@ -68,11 +68,11 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
                 new DriveToPosition(m_mecanumDrive, new Pose2d(65, 90, Rotation2d.fromDegrees(155))).withTimeout(2200)   // moves near third sample
             ),
             new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900),  // was 1200 // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(80, 75, Rotation2d.fromDegrees(155))).withTimeout(2200),   // collects third sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(81, 75, Rotation2d.fromDegrees(155))).withTimeout(2200),   // collects third sample
 
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(123, 123, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
                 ),
 
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
@@ -105,11 +105,11 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 //                new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(700)  // retracts arm
 
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(110, 115, Rotation2d.fromDegrees(215))).withTimeout(200),  // backs away from basket
+                new DriveToPosition(m_mecanumDrive, new Pose2d(111, 115, Rotation2d.fromDegrees(215))).withTimeout(200),  // backs away from basket
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(400),  // retracts arm
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(90, 29.7, Rotation2d.fromDegrees(0))).withTimeout(1500),  // moves close to bar
-                new DriveToPosition(m_mecanumDrive, new Pose2d(45, 29.7, Rotation2d.fromDegrees(4))).withTimeout(2250)  // rotates to face bar
+                new DriveToPosition(m_mecanumDrive, new Pose2d(91, 29.7, Rotation2d.fromDegrees(0))).withTimeout(1500),  // moves close to bar
+                new DriveToPosition(m_mecanumDrive, new Pose2d(46, 29.7, Rotation2d.fromDegrees(4))).withTimeout(2250)  // rotates to face bar
 
 
         );
