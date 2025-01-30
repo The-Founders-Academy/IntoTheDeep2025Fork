@@ -44,7 +44,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
     double perpendicularOffsetCentimeters = 20.32;
 
     public static double TranslationToleranceCentimeters = 0.5;
-    public static double RotationToleranceRad = Math.toRadians(3); // 3 Deg
+    public static double RotationToleranceRad = Math.toRadians(1); // 3 Deg
 
     private PIDController m_translationXController;
     private PIDController m_translationYController;

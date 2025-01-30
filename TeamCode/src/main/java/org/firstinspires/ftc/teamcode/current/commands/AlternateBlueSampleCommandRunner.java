@@ -38,10 +38,10 @@ public class AlternateBlueSampleCommandRunner extends SequentialCommandGroup {
 
 
                 // COLLECTING SECOND SAMPLE
-                new DriveToPosition(m_mecanumDrive, new Pose2d(57, 109, Rotation2d.fromDegrees(151))).withTimeout(6000), // 142 deg and was 2200  // moves to second sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(55, 105, Rotation2d.fromDegrees(151))).withTimeout(6000), // 142 deg and was 2200  // moves to second sample
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1),
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900), // was 1200 // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(70.68, 102, Rotation2d.fromDegrees(151))).withTimeout(2000), // was 2500  // moves to second sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(70.68, 97, Rotation2d.fromDegrees(151))).withTimeout(2000), // was 2500  // moves to second sample
 
                 // SCORING SECOND SAMPLE
                  new ParallelCommandGroup(
