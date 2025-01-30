@@ -23,13 +23,13 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
         // Starting Position:
         addCommands(
                 // SCORING PRELOADED SAMPLE
-                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_CLEAR_BARRIER).withTimeout(1),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLAPSED_INTO_ROBOT).withTimeout(1),
 
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(1), // ensure the arm stays put
                 // Hooks preloaded specimen onto bar
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1500),
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2700)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(217))).withTimeout(2700)    // moves to basket
                 ),
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
 
@@ -44,35 +44,35 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 
                 // SCORING SECOND SECOND SAMPLE
                 new ParallelCommandGroup(
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(53, 109, Rotation2d.fromDegrees(140))).withTimeout(2000) // was 2200  // moves to second sample
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(47, 115, Rotation2d.fromDegrees(142))).withTimeout(2000) // was 2200  // moves to second sample
                 ),
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900), // was 1200 // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(67, 97, Rotation2d.fromDegrees(142))).withTimeout(2000), // was 2500  // moves to second sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(67, 102, Rotation2d.fromDegrees(142))).withTimeout(2000), // was 2500  // moves to second sample
 
                 new ParallelCommandGroup(
-                    new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
-                    new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
+                        new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(219))).withTimeout(2500)    // moves to basket
                 ),
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
                 new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_DEPSOSIT).withTimeout(800),
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(110, 115, Rotation2d.fromDegrees(215))).withTimeout(200), // was 300
+                new DriveToPosition(m_mecanumDrive, new Pose2d(111, 115, Rotation2d.fromDegrees(215))).withTimeout(200), // was 300
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(700),  // retracts arm
 
 
 
 
-            // SCORING THIRD SAMPLE
-            new ParallelCommandGroup(
-                new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1), // intakes third sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(65, 90, Rotation2d.fromDegrees(155))).withTimeout(2200)   // moves near third sample
-            ),
-            new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900),  // was 1200 // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(80, 75, Rotation2d.fromDegrees(155))).withTimeout(2200),   // collects third sample
+                // SCORING THIRD SAMPLE
+                new ParallelCommandGroup(
+                        new IntakeCommand(m_armSubsystem, IntakeCommand.IntakeSetting.INTAKE_COLLECT).withTimeout(1), // intakes third sample
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(63, 102, Rotation2d.fromDegrees(155))).withTimeout(2200)   // moves near third sample
+                ),
+                new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900),  // was 1200 // collects second sample
+                new DriveToPosition(m_mecanumDrive, new Pose2d(81, 87, Rotation2d.fromDegrees(155))).withTimeout(2200),   // collects third sample
 
                 new ParallelCommandGroup(
                         new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1000), // was 1500
-                        new DriveToPosition(m_mecanumDrive, new Pose2d(124, 124, Rotation2d.fromDegrees(215))).withTimeout(2500)    // moves to basket
+                        new DriveToPosition(m_mecanumDrive, new Pose2d(123, 123, Rotation2d.fromDegrees(219))).withTimeout(2500)    // moves to basket
                 ),
 
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.LEFT_BUMPER_PRESSED).withTimeout(700),
@@ -105,12 +105,11 @@ public class BlueSampleCommandRunner extends SequentialCommandGroup {
 //                new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(700)  // retracts arm
 
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(110, 115, Rotation2d.fromDegrees(215))).withTimeout(200),  // backs away from basket
+                new DriveToPosition(m_mecanumDrive, new Pose2d(111, 115, Rotation2d.fromDegrees(215))).withTimeout(200),  // backs away from basket
                 new ArmCommand(m_armSubsystem, m_liftSubsystem, ArmCommand.ArmPosition.RIGHT_BUMPER_PRESSED).withTimeout(400),  // retracts arm
 
-                new DriveToPosition(m_mecanumDrive, new Pose2d(90, 29.7, Rotation2d.fromDegrees(0))).withTimeout(1500),  // moves close to bar
-                new DriveToPosition(m_mecanumDrive, new Pose2d(45, 29.7, Rotation2d.fromDegrees(4))).withTimeout(2250)  // rotates to face bar
-
+                new DriveToPosition(m_mecanumDrive, new Pose2d(91, 29.7, Rotation2d.fromDegrees(0))).withTimeout(1500),  // moves close to bar
+                new DriveToPosition(m_mecanumDrive, new Pose2d(35, 29.7, Rotation2d.fromDegrees(0))).withTimeout(3000)  // rotates to face bar
 
         );
     }
