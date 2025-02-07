@@ -43,8 +43,8 @@ public class Mecanum2025 extends BaseMecanumDrive {
     public double trackWidthCentimeters = 36.3;
     double perpendicularOffsetCentimeters = 20.32;
 
-    public static double TranslationToleranceCentimeters = 0.5;
-    public static double RotationToleranceRad = Math.toRadians(1); // 3 Deg
+    public static double TranslationToleranceCentimeters = 2; // 0.5cm
+    public static double RotationToleranceRad = Math.toRadians(2); // 3 Deg
 
     private PIDController m_translationXController;
     private PIDController m_translationYController;
