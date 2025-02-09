@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.shared.util.MathUtil;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 
 public abstract class BaseMecanumDrive extends SubsystemBase {
 
@@ -36,6 +38,9 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
     public abstract Pose2d getPose();
     public abstract void resetPose(Pose2d pose);
     public abstract void resetHeading();
+    private VoltageSensor myControlHubVoltageSensor;
+    public double currentVoltage;
+
 
     public BaseMecanumDrive(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         m_mecanumConfigs = mecanumConfigs;
@@ -43,6 +48,7 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         m_frontRight = new MotorEx(hardwareMap, m_mecanumConfigs.getFrontRightName(), Motor.GoBILDA.RPM_312);
         m_backLeft = new MotorEx(hardwareMap, m_mecanumConfigs.getBackLeftName(), Motor.GoBILDA.RPM_312);
         m_backRight = new MotorEx(hardwareMap, m_mecanumConfigs.getBackRightName(), Motor.GoBILDA.RPM_312);
+        myControlHubVoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         m_frontLeft.setRunMode(m_mecanumConfigs.getRunMode());
         m_frontRight.setRunMode(m_mecanumConfigs.getRunMode());
@@ -51,7 +57,6 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
 
         m_kinematics = new MecanumDriveKinematics(m_mecanumConfigs.getFrontLeftPosition(), m_mecanumConfigs.getFrontRightPosition(),
                 m_mecanumConfigs.getBackLeftPosition(), m_mecanumConfigs.getBackRightPosition());
-
 
 
     }
@@ -111,5 +116,11 @@ public abstract class BaseMecanumDrive extends SubsystemBase {
         move(speeds);
     }
 
+    public void periodic() {
+        currentVoltage = myControlHubVoltageSensor.getVoltage();
 
+        TelemetryPacket voltage = new TelemetryPacket();
+        voltage.put("currentVoltage: ", currentVoltage);
+        FtcDashboard.getInstance().sendTelemetryPacket(voltage);
+    }
 }
