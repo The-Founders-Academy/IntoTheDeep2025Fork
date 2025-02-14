@@ -12,10 +12,12 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.current.util.HolonomicOdometry2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
@@ -27,11 +29,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
     @Config
     public static class Mecanum2025PARAMS {
 
-        public static double TranslationP = 0.035; // was 0.035
-        public static double TranslationI = 0.0175; // was 0.0175
+        public static double TranslationP = 0.025; // was 0.035
+        public static double TranslationI = 0.02; // was 0.0175
         public static double TranslationD = 0;
-        public static double RotationP = 3; // was 3
-        public static double RotationI = 0.0175; // was 0.0175
+        public static double RotationP = 6.25; // was 3
+        public static double RotationI = 0.05; // was 0.0175
         public static double RotationD = 0;
 
     }
@@ -57,6 +59,10 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     private Rotation2d m_referenceRotation = Rotation2d.fromDegrees(0); // Used for heading
 
+    private VoltageSensor myControlHubVoltageSensor;
+    public double currentVoltage;
+
+
     /**
      * Defines the system to use for DriveToPosition commands, used for driving, and used for tuning PIDs and odometry. Connected with BaseMecanumDrive.
      *
@@ -74,6 +80,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         m_translationYController = new PIDController(0,0,0);
         m_translationXController = new PIDController(0,0,0);
         m_rotationController = new PIDController(0,0,0);
+        myControlHubVoltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
 
         m_frontLeft.setInverted(true);
@@ -108,6 +115,7 @@ public class Mecanum2025 extends BaseMecanumDrive {
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
         m_odo.updatePose(initialPose);
     }
+
 
     @Override
     public Pose2d getPose() {
@@ -232,6 +240,14 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
     }
 
+    protected void move(ChassisSpeeds speeds) {
+        MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
+        m_frontLeft.setVelocity( wheelSpeeds.frontLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick()   *  10 / currentVoltage  );
+        m_frontRight.setVelocity(wheelSpeeds.frontRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick()  *  10 / currentVoltage  );
+        m_backLeft.setVelocity(wheelSpeeds.rearLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick()      *  10 / currentVoltage  );
+        m_backRight.setVelocity(wheelSpeeds.rearRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick()    *  10 / currentVoltage  );
+    }
+
     public void stop() {
         m_frontLeft.stopMotor();
         m_frontRight.stopMotor();
@@ -305,7 +321,11 @@ public class Mecanum2025 extends BaseMecanumDrive {
 
         // FtcDashboard.getInstance().sendTelemetryPacket(thirdTestDebuggingInfo);
 
+        currentVoltage = myControlHubVoltageSensor.getVoltage();
 
+        TelemetryPacket voltage = new TelemetryPacket();
+        voltage.put("currentVoltage: ", currentVoltage);
+        FtcDashboard.getInstance().sendTelemetryPacket(voltage);
     }
 
 

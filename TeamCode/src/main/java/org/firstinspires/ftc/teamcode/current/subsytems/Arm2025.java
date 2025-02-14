@@ -30,17 +30,17 @@ public class Arm2025 extends SubsystemBase {
 
 
         public static double ARM_COLLAPSED_INTO_ROBOT = 0;
-        public static double ARM_COLLECT = 232.412 * ARM_TICKS_PER_DEGREE;
-        public static double ARM_CLEAR_BARRIER = 216.2446191467432 * ARM_TICKS_PER_DEGREE;    // was 230
+        public static double ARM_COLLECT = 241.2746784655458 * ARM_TICKS_PER_DEGREE; // was 241.5068410096805
+        public static double ARM_CLEAR_BARRIER = 222.3075523938481 * ARM_TICKS_PER_DEGREE;    // was 217.2446191467432
         public static double ARM_SCORE_SPECIMEN = 149 * ARM_TICKS_PER_DEGREE;       // was 148
-        public static double ARM_SCORE_SAMPLE_IN_LOW = 125.04 * ARM_TICKS_PER_DEGREE; // was 126.35
+        public static double ARM_SCORE_SAMPLE_IN_LOW = 131.3635536872739 * ARM_TICKS_PER_DEGREE; // was 125.04
         public static double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
         public static double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
         /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
         public static double WRIST_FOLDED_IN = 1; //Previous: 0.82
-        public static double WRIST_SCORE_SPECIMEN = 0.32;
-        public static double WRIST_FOLDED_OUT = 0.63; // Previous: 0.5
+        public static double WRIST_SCORE_SPECIMEN = 1;
+        public static double WRIST_FOLDED_OUT = 0.65;
         // There's always a difference of exactly 0.32 units.  Folded in will always be 0.32 higher than folded out.
 
         public static double LIFT_COLLAPSED = 0;
@@ -57,7 +57,7 @@ public class Arm2025 extends SubsystemBase {
 
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double INTAKE_COLLECT = 0.8;
+    final double INTAKE_COLLECT = 1.0;
     final double INTAKE_OFF = 0.0;
     final double INTAKE_DEPOSIT = -1.0; // was 0.5
 

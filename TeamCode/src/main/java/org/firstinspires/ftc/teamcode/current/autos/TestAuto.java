@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.shared.mecanum.MecanumConfigs;
 
 @Autonomous
 public class TestAuto extends CommandOpMode {
-
     private Mecanum2025 m_mecanumDrive;
     private Arm2025 m_armSubsystem;
     private Lift2025 m_liftSubsystem;
@@ -31,6 +30,7 @@ public class TestAuto extends CommandOpMode {
         m_liftSubsystem = new Lift2025(hardwareMap);
 
 
-        CommandScheduler.getInstance().schedule(new DriveToPosition(m_mecanumDrive, new Pose2d(0, 0, Rotation2d.fromDegrees(270))).withTimeout(10000));
+        CommandScheduler.getInstance().schedule(new DriveToPosition(m_mecanumDrive, new Pose2d(50, 0, Rotation2d.fromDegrees(270))).withTimeout(10000));
     }
+
 }

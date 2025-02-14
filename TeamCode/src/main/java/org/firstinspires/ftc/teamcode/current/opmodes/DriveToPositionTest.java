@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.current.commands.BlueSpecimenCommandRunner;
+import org.firstinspires.ftc.teamcode.current.commands.DriveToPosition;
 import org.firstinspires.ftc.teamcode.current.subsytems.Arm2025;
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 import org.firstinspires.ftc.teamcode.shared.mecanum.BaseMecanumDrive;
@@ -26,11 +27,12 @@ public class DriveToPositionTest extends CommandOpMode {
     public void initialize() {
         m_driver = new CommandGamepad(gamepad1, 0, 0);
         MecanumConfigs mecanumConfigs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
-        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(-42.38, 161, Rotation2d.fromDegrees(270)), BaseMecanumDrive.Alliance.BLUE);
+        m_mecanumDrive = new Mecanum2025(hardwareMap, mecanumConfigs, new Pose2d(0, 0, Rotation2d.fromDegrees(0)), BaseMecanumDrive.Alliance.BLUE);
         // sets initial pose, should reflect where robot is physically placed
         m_armSubsystem = new Arm2025(hardwareMap);
 
-        m_driver.buttonB().whenPressed(new BlueSpecimenCommandRunner(m_mecanumDrive, m_armSubsystem));
+        m_driver.buttonA().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(130, 0, Rotation2d.fromDegrees(0))));
+        m_driver.buttonB().whenPressed(new DriveToPosition(m_mecanumDrive, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));
 
     }
 }
