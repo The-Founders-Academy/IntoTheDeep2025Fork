@@ -19,7 +19,7 @@ public class DriverRelativeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        m_mecanum.moveFieldRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());     // rotation inverted because clockwise rotation is negative
+        m_mecanum.moveAllianceRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());     // rotation inverted because clockwise rotation is negative
 
         TelemetryPacket P = new TelemetryPacket();
         P.put("Left X", m_driver.getLeftX());

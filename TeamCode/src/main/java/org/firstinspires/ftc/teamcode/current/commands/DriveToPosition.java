@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode.current.commands;
 
-
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.current.subsytems.Mecanum2025;
 
-public class MoveToPosition extends CommandBase {
+public class DriveToPosition extends CommandBase {
     private Mecanum2025 m_mecanumDrive;
     private Pose2d m_targetPose;
 
-    public MoveToPosition(Mecanum2025 mecanumDrive, Pose2d targetPose) {
+    public DriveToPosition(Mecanum2025 mecanumDrive, Pose2d targetPose) {
         m_mecanumDrive = mecanumDrive;
         m_targetPose = targetPose;
 
@@ -22,12 +18,12 @@ public class MoveToPosition extends CommandBase {
 
     @Override
     public void initialize() {
-        m_mecanumDrive.setTargetPose(m_targetPose);
+        m_mecanumDrive.setTargetPose(m_targetPose);     // Puts targetPose into translationcontrollers
     }
 
     @Override
     public void execute() {
-        m_mecanumDrive.moveAllianceRelative(0.5,0.5,0.5);
+        m_mecanumDrive.moveFieldRelativeForPID();
     }
 
     public boolean isFinished() {
@@ -35,6 +31,7 @@ public class MoveToPosition extends CommandBase {
     }
 
     public void end(boolean interrupted) {
+        m_mecanumDrive.resetPIDS();
         m_mecanumDrive.stop();
     }
 }

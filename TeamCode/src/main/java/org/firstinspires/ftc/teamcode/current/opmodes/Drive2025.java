@@ -68,4 +68,118 @@ public class Drive2025 extends CommandOpMode {
         m_mecanumDrive.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
     }
 
+
+    @Override
+    public void runOpMode() {
+
+        armMotor = hardwareMap.get(DcMotor.class, "left_arm"); //the arm motor
+        intake = hardwareMap.get(CRServo.class, "intake");      // intake servo, continuous
+        wrist = hardwareMap.get(Servo.class, "wrist");         // wrist servo, not continuous
+
+        /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
+        ((DcMotorEx) armMotor).setCurrentAlert(5, CurrentUnit.AMPS);
+
+
+        /* The code below runs Before starting the armMotor. We make sure the TargetPosition is set to 0.
+        Then we set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
+        We need to plug the encoder wire into the motor and corresponding encoder slot for this to work */
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        /* Make sure that the intake is off, and the wrist is folded in. */
+        intake.setPower(INTAKE_OFF);                        // sets a power between -1 to 1 just like a real motor
+        wrist.setPosition(WRIST_FOLDED_IN);                 // sets the WRIST_FOLDED_IN position of the non-continuous servo (which is zero)
+
+        /* Wait for the game driver to press play */
+        waitForStart();
+
+        /* Run until the driver presses stop */
+        while (opModeIsActive()) {
+
+            if (gamepad1.a) {
+                intake.setPower(INTAKE_COLLECT);
+            } else if (gamepad1.x) {
+                intake.setPower(INTAKE_OFF);
+            } else if (gamepad1.b) {
+                intake.setPower(INTAKE_DEPOSIT);
+            }
+
+
+
+             /* Here we implement a set of if else statements to set our arm to different scoring positions.
+            We check to see if a specific button is pressed, and then move the arm (and sometimes
+            intake and wrist) to match. For example, if we click the right bumper we want the robot
+            to start collecting. So it moves the armPosition to the ARM_COLLECT position,
+            it folds out the wrist to make sure it is in the correct orientation to intake, and it
+            turns the intake on to the COLLECT mode.*/
+
+            if (gamepad1.right_bumper) {
+                /* This is the intaking/collecting arm position */
+                armPosition = ARM_COLLECT;
+                wrist.setPosition(WRIST_FOLDED_OUT);
+                intake.setPower(INTAKE_COLLECT);
+            } else if (gamepad1.left_bumper) {
+                    /* This is about 20° up from the collecting position to clear the barrier
+                    Note here that we don't set the wrist position or the intake power when we
+                    select this "mode", this means that the intake and wrist will continue what
+                    they were doing before we clicked left bumper. */
+                armPosition = ARM_CLEAR_BARRIER;
+            } else if (gamepad1.y) {
+                /* This is the correct height to score the sample in the LOW BASKET */
+                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
+            } else if (gamepad1.dpad_left) {
+                    /* This turns off the intake, folds in the wrist, and moves the arm
+                    back to folded inside the robot. This is also the starting configuration */
+                armPosition = ARM_COLLAPSED_INTO_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            } else if (gamepad1.dpad_right) {
+                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
+                armPosition = ARM_SCORE_SPECIMEN;
+                wrist.setPosition(WRIST_FOLDED_IN);
+            } else if (gamepad1.dpad_up) {
+                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
+                armPosition = ARM_ATTACH_HANGING_HOOK;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            } else if (gamepad1.dpad_down) {
+                /* this moves the arm down to lift the robot up once it has been hooked */
+                armPosition = ARM_WINCH_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
+
+
+            /* Here we create a "fudge factor" for the arm position.
+            This allows you to adjust (or "fudge") the arm position slightly with the gamepad triggers.
+            We want the left trigger to move the arm up, and right trigger to move the arm down.
+            So we add the right trigger's variable to the inverse of the left trigger. If you pull
+            both triggers an equal amount, they cancel and leave the arm at zero. But if one is larger
+            than the other, it "wins out". This variable is then multiplied by our FUDGE_FACTOR.
+            The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
+
+            armPositionFudgeFactor = FUDGE_FACTOR * (gamepad1.right_trigger + (-gamepad1.left_trigger));
+
+
+             /* Here we set the target position of our arm to match the variable that was selected
+            by the driver.
+            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
+
+            armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor));
+
+            ((DcMotorEx) armMotor).setVelocity(2100);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            /* Check to see if our arm is over the current limit, and report via telemetry. */
+            if (((DcMotorEx) armMotor).isOverCurrent()) {
+                telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
+            }
+
+            /* send telemetry to the driver of the arm's current position and target position */
+            telemetry.addData("armTarget: ", armMotor.getTargetPosition());
+            telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
+            telemetry.update();
+        }
+    }
 }
