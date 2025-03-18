@@ -276,10 +276,16 @@ public class Mecanum2025 extends BaseMecanumDrive {
             (0, 0, 0deg): Pushing the robot forward while it is at 0deg increases only the x coordinate, while pushing it to the left only increases the y coordinate
             (0, 0, 90deg): Pushing the robot forward while it is at 90deg increases only the y coordinate, while pushing it to the left decreases the x coordinate
             You should expect exactly the same results for the (1,1) tests with corresponding angles.
+
          */
         firstTestDebuggingInfo.put("Recorded x", m_odo.getPose().getX());
         firstTestDebuggingInfo.put("Recorded y", m_odo.getPose().getY());
         firstTestDebuggingInfo.put("Recorded theta (abs coord)", m_odo.getPose().getRotation().getDegrees());
+
+        firstTestDebuggingInfo.put("perp Pod", m_backLeft.encoder.getPosition());
+        firstTestDebuggingInfo.put("right Pod", m_frontLeft.encoder.getPosition());
+        firstTestDebuggingInfo.put("Left Pod",  m_frontRight.encoder.getPosition());
+
 
         // Comment me out when you're done with the first test
         FtcDashboard.getInstance().sendTelemetryPacket(firstTestDebuggingInfo);

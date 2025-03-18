@@ -1,0 +1,29 @@
+package org.firstinspires.ftc.teamcode.current.testing;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+@TeleOp
+public class StringSpoolerCode extends LinearOpMode {
+
+    private DcMotor motor;
+
+    @Config
+    public static class SpoolerParams {
+        public static double speed = 0;
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        motor = hardwareMap.get(DcMotor.class, "motor");
+
+
+        waitForStart();
+        while(opModeIsActive()) {
+            motor.setPower(SpoolerParams.speed);
+        }
+    }
+}
