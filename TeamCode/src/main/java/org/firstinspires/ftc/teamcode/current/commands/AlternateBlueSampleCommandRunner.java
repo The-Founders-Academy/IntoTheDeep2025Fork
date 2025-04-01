@@ -85,7 +85,7 @@ public class AlternateBlueSampleCommandRunner extends SequentialCommandGroup {
 //                new ParallelCommandGroup(
 //                    new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SPECIMEN).withTimeout(2000),
 //                    new DriveToPosition(m_mecanumDrive, new Pose2d(60, 27, Rotation2d.fromDegrees(0))).withTimeout(3000)
-//                )
+//                )d
 
 
 
@@ -97,13 +97,13 @@ public class AlternateBlueSampleCommandRunner extends SequentialCommandGroup {
                     new DriveToPosition(m_mecanumDrive, new Pose2d(100, 55, Rotation2d.fromDegrees(180))).withTimeout(2200)  // was 2500 // moves near third sample
                 ),
                 new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_COLLECT).withTimeout(900),  // collects second sample
-                new DriveToPosition(m_mecanumDrive, new Pose2d(125, 55, Rotation2d.fromDegrees(180))).withTimeout(1000), // was 1300
-                new DriveToPosition(m_mecanumDrive, new Pose2d(0, 55, Rotation2d.fromDegrees(180))).withTimeout(100),
+                new DriveToPosition(m_mecanumDrive, new Pose2d(125, 50, Rotation2d.fromDegrees(180))).withTimeout(1000), // was 1300
+                new DriveToPosition(m_mecanumDrive, new Pose2d(0, 50, Rotation2d.fromDegrees(180))).withTimeout(100),
 
 
                 // SCORING FOURTH SAMPLE
                 new ParallelCommandGroup(
-                    new DriveToPosition(m_mecanumDrive, new Pose2d(130, 137, Rotation2d.fromDegrees(223))).withTimeout(2900), // was 3000
+                    new DriveToPosition(m_mecanumDrive, new Pose2d(128, 137, Rotation2d.fromDegrees(223))).withTimeout(2900), // was 3000
                     new ArmCommand(m_armSubsystem, ArmCommand.ArmPosition.ARM_SCORE_SAMPLE_IN_LOW).withTimeout(1500)
                 ),
 
